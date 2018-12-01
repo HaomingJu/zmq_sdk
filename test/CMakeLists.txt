@@ -1,2 +1,2 @@
-add_subdirectory(client_receive)
-add_subdirectory(client_send)
+add_subdirectory(testClient)
+add_subdirectory(testServer)
