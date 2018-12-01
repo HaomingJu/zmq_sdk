@@ -5,3 +5,5 @@ if(${platform} STREQUAL "linux" AND ${architecture} STREQUAL "x86" AND ${vendor}
     add_subdirectory(client_receive_ui)
 endif()
 
+add_subdirectory(testHobotServer)
+add_subdirectory(testHobotClient)

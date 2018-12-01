@@ -6,7 +6,8 @@ project(zmq_sdk)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC -Wall")
-
+include_directories(./src/)
 set(CMAKE_INSTALL_PREFIX ${_INSTALL_DIR})
-
+add_definitions("-Wall -g")
+add_subdirectory(src)
 add_subdirectory(test)

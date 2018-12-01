@@ -37,3 +37,5 @@ password   deploy-alpha@hobot.cc
 
 # install artifact
 install_artifact    com.hobot.native.example:zmq_sdk:1.0.0:zip:false
+artifact2       com.hobot.native.hobot:hobot:1.4.4:zip:true
+artifact3       com.hobot.native.hobot:hobotlog:2.1.0:zip
