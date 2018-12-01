@@ -3,7 +3,7 @@ set(SOURCE_FILES
 
 add_executable(client_receive ${SOURCE_FILES})
 
-target_link_libraries(client_receive zmq)
+target_link_libraries(client_receive pthread zmq)
 
 install (TARGETS client_receive
         RUNTIME DESTINATION bin)
