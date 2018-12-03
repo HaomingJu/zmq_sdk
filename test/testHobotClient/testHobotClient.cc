@@ -27,12 +27,14 @@ int main(int argc, char **argv) {
   }
   HobotZmqClient client;
   client.Init(ipstr.c_str());
-  char buf[100];
+  int bufflen = 2 * 1024 * 1024;
+  void *buf = malloc(bufflen);
+  memset(buf, 0, bufflen);
   while (true) {
     client.RecvData(nullptr, 0);
-    client.RecvData(buf, 90);
-    printf("RecvData=%s \n", buf);
-    buf[0] = '\0';
+    int size = client.CopyRecvData(buf, bufflen);
+    printf("RecvData size =%d \n", size);
+    memset(buf, 0, bufflen);
     // sleep(1);
   }
 

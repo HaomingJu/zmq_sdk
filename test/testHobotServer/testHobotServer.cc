@@ -28,11 +28,12 @@ int main(int argc, char **argv) {
   HobotZmqServer servrer;
   servrer.Init(ipstr.c_str());
   char str[] = "hello world";
+  void *buff = malloc(1024 * 1024);
   printf("begin Send \n");
   while (true) {
-    printf("begin Send=%s \n", str);
-    servrer.SendData(str, strlen(str), nullptr);
-    printf("end Send=%s \n", str);
+    // printf("begin Send=%s \n", str);
+    servrer.SendData(buff, 1024 * 1024, nullptr);
+    printf("Send=%s \n", str);
     sleep(1);
   }
 

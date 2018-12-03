@@ -48,6 +48,9 @@ int HobotZmqServer::Init(const char *config) {
     LOGD << "zmq_bind failed ";
     return 1;
   }
+
+  zmq_msg_init(&m_msg);
+  zmq_msg_init_size(&m_msg, 2 * 1024 * 1024);
   return 0;
 }
 static int SendSingleMsg(void *s, zmq_msg_t &msg, int flag) {
@@ -79,12 +82,19 @@ static int SendSingleMsg(void *s, zmq_msg_t &msg, int flag) {
 }
 
 int HobotZmqServer::SendData(void *data, int datalen, MQCallBack callback) {
+  if (!data || datalen <= 0) {
+    LOGD << "data null";
+    return 1;
+  }
   int meta_send_flag = ZMQ_NOBLOCK;
   zmq_msg_t msg;
-  int rc = zmq_msg_init_data(&msg, data, datalen, NULL, NULL);
-  if (rc != 0) {
-    return 0;
+
+
+  int ret = zmq_msg_init_data(&msg, data, datalen, nullptr, nullptr);
+  if (ret != 0) {
+    LOGD << "retzmq_msg_init_data failed";
+    return 1;
   }
+
   return SendSingleMsg(m_requester, msg, meta_send_flag);
-  // return 0;
 }

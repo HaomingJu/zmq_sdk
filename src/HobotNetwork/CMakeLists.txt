@@ -14,6 +14,7 @@ include_directories(
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${PROJECT_SOURCE_DIR}/symbols.lst")
 
 add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
+#add_library(${PROJECT_NAME} STATIC ${CPP_FILES})
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotNetwork/HobotZmqClient.h" DESTINATION include)

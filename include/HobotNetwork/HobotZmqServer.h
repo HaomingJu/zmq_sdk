@@ -9,6 +9,7 @@
 #define HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQSEVER_H_
 
 //#include "HobotServerBase.h"
+#include <zmq.h>
 typedef void (*MQCallBack)(void *data, void *hint);
 class HobotZmqServer {
  public:
@@ -19,6 +20,7 @@ class HobotZmqServer {
 
  private:
   void *m_requester;
+  zmq_msg_t m_msg;
 };
 
 #endif /* HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQSEVER_H_ */

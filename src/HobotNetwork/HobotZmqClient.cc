@@ -33,8 +33,9 @@ int HobotZmqClient::Init(const char *config) {
   zmq_setsockopt(m_requester, ZMQ_RCVHWM, &recvhwm, sizeof(int));
   int recv_to;
   zmq_setsockopt(m_requester, ZMQ_RCVTIMEO, &recv_to, sizeof(int));
-
-  rc = zmq_msg_init(&m_msg);
+  int bufflen = 2 * 1024 * 1024;
+  m_buff = malloc(bufflen);
+  rc = zmq_msg_init_data(&m_msg, m_buff, bufflen, nullptr, nullptr);
   /// assert(rc == 0);
   return 0;
 }

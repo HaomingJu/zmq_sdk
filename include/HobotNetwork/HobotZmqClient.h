@@ -22,6 +22,7 @@ class HobotZmqClient {
   void *m_requester;
   zmq_msg_t m_msg;
   int m_recv_size;
+  void *m_buff;
 };
 
 
