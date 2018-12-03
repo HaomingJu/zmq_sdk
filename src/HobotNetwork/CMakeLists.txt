@@ -2,7 +2,9 @@ project(HobotNetwork)
 
 file(GLOB CPP_FILES *.cc)
 
+
 set(library_list
+    utils
     zmq
     hobotlog)
 

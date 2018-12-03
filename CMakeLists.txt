@@ -17,3 +17,4 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(example)
