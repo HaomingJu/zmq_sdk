@@ -1,2 +1,5 @@
 build.properties
 build.properties.local
+dep_linux_armhf_matrix.tmp
+dep_linux.tmp
+build/
