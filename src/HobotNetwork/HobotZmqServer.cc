@@ -6,7 +6,7 @@
  */
 
 
-#include "HobotZmqServer.h"
+#include "HobotNetwork/HobotZmqServer.h"
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>

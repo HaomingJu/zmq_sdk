@@ -4,7 +4,7 @@
  *  Created on: Nov 29, 2018
  *      Author: user
  */
-#include "HobotZmqClient.h"
+#include "HobotNetwork/HobotZmqClient.h"
 #include <errno.h>
 #include <string.h>
 #include "hobotlog/hobotlog.hpp"
