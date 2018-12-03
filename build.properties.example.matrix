@@ -28,7 +28,7 @@ repository2_username    deploy-alpha
 repository2_password    deploy-alpha@hobot.cc
 
 # dependency artifacts
-artifact1 com.hobot.native.hobot-dms:libzmq:4.2.3_linux
+artifact1 com.hobot.native.hobot-dms:libzmq:4.2.3:zip
 
 install_repository  http://ci.horizon-robotics.com:8081/artifactory/libs-release-local/
 username   deploy-alpha
