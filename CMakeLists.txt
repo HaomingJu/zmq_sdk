@@ -17,4 +17,7 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
 
 add_subdirectory(src)
 add_subdirectory(test)
-add_subdirectory(example)
+
+if(${platform} STREQUAL "linux" AND ${architecture} STREQUAL "x86" AND ${vendor} STREQUAL "default")
+    add_subdirectory(example)
+endif()
