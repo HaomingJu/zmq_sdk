@@ -76,4 +76,14 @@ Linux(x86)中运行, 启动数据接收端:
 ./testServer 192.168.1.10 5555
 ```
 
+## 运行
 
+PC端运行
+```
+./ZMQServerUI 192.168.1.10 5555
+```
+Matrix端运行:
+```
+./sdk_sdk_zmq ../etc/global.json
+```
+即可从PC端接受到Matrix端发送的数据.
