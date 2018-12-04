@@ -3,7 +3,12 @@ project(ZMQServerUI)
 include_directories(
     ${zmq_sdk_INCLUDE_DIRS})
 
-file(GLOB CPP_FILES *.cc)
+#file(GLOB CPP_FILES *.cc)
+
+set(CPP_FILES
+    mainwindow.cc
+    moc_mainwindow.cc
+    ZMQServerUi.cc)
 
 
 set(library_list

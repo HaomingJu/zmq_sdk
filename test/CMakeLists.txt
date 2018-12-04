@@ -7,3 +7,4 @@ endif()
 
 add_subdirectory(testHobotServer)
 add_subdirectory(testHobotClient)
+add_subdirectory(testComProtocol)

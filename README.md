@@ -49,6 +49,7 @@ Matrix Compile Path: `smb://bjnas/horizonrobotics/CarNet/Haoming.Ju/Matrix交叉
 ### 编译操作
 
 ```
+sh pre.sh
 mkdir build
 cd build
 cmake ../

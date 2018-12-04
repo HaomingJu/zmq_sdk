@@ -19,6 +19,5 @@ int main(int argc, char **argv) {
   MainWindow mainWin;
   mainWin.Init(IMAGE_W, IMAGE_H, tcp_adder);
   mainWin.show();
-  mainWin.Run();
   return app.exec();
 }
