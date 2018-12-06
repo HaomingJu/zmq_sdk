@@ -87,3 +87,66 @@ Matrix端运行:
 ./sdk_sdk_zmq ../etc/global.json
 ```
 即可从PC端接受到Matrix端发送的数据.
+
+## Q & A
+
+Question 1:
+
+**Ubuntu 16.0.4 编译时出现错误, 如下:**
+
+```
+/usr/bin/ld: warning: libicui18n.so.60, need by ../libQt5Core.so not found...
+/usr/bin/ld: warning: libicuuc.so.60 need by ../libQt5Core.so not found...
+```
+
+Answer 1:
+
+往 `/etc/apt/sources.list` 文件中添加一行
+
+```
+deb http://cz.archive.ubuntu.com/ubuntu bionic main
+```
+
+然后执行:
+
+```
+sudo apt-get update
+sudo apt-get install libicu60
+```
+
+参考网址: https://packages.ubuntu.com/bionic/amd64/libicu60/download
+
+Question 2:
+
+**Ubuntu 16.0.4 编译出现错误, 如下:**
+
+```
+libQt5Core.so: undefined reference to `getentropy@GLIBC_2.25`
+libQt5Gui.so: undefined reference to `hb_font_funcs_set_nominal_glyph_func`
+libQt5Gui.so: undefined reference to `hb_font_funcs_set_font_h_extents_func`
+libQt5Gui.so: undefined reference to `hb_font_funcs_set_variation_glyph_func`
+```
+
+Answer 2:
+
+```
+sudo apt-get install libc6
+sudo apt-get install libharfbuzz-dev
+```
+
+Question 3:
+
+**Ubuntu 16.0.4 运行ZMQServerUI 出错, 如下:**
+
+```
+./ZMQServerUi
+qt.qpa.plugin: Could not find the Qt platform plugin "xcb" in ""
+This applicatio failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix thsi problem.
+
+Aborted(core dumped)
+```
+
+
+```
+export QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins/
+```
