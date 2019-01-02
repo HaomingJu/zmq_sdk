@@ -9,20 +9,22 @@
 #define HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQCLIENT_H_
 
 #include <zmq.h>
-
-//#include "HobotClientBase.h"
-class HobotZmqClient {
+#include "HobotNetworkInstance.h"
+class HobotZmqClient: public HobotClientBase {
  public:
+  HobotZmqClient() : m_context(nullptr), m_requester(nullptr), m_buff(nullptr), m_buff_size(0) {}
+  ~HobotZmqClient() {}
   int Init(const char *config);
-  int RecvData(void *buff = nullptr, int bufflen = 0);
-  int CopyRecvData(void *buff, int bufflen);
-  void Finish(){};
+  int SendData(const void *data = nullptr, size_t datalen = 0); 
+  int RecvData(void *buff = nullptr, size_t bufflen = 0);
+  int CopyRecvData(void *buff, size_t bufflen);
+  void Finish();
 
  private:
+  void *m_context;
   void *m_requester;
-  zmq_msg_t m_msg;
-  int m_recv_size;
   void *m_buff;
+  size_t m_buff_size;
 };
 
 

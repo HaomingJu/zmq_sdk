@@ -2,10 +2,9 @@ project(HobotNetwork)
 
 file(GLOB CPP_FILES *.cc)
 set(CPP_FILES
-    HobotNetwork/HobotClientBase.cc
-    HobotNetwork/HobotServerBase.cc
     HobotNetwork/HobotZmqClient.cc
     HobotNetwork/HobotZmqServer.cc
+    HobotNetwork/HobotNetworkInstance.cc
     utils/CommunicationProtocol.cc)
 
 
@@ -16,7 +15,7 @@ set(library_list
 include_directories(
     ${zmq_sdk_INCLUDE_DIRS})
 
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${PROJECT_SOURCE_DIR}/symbols.lst")
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${PROJECT_SOURCE_DIR}/symbols.lst")
 
 add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
 

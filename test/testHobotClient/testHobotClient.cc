@@ -12,7 +12,6 @@
 #include <unistd.h>
 #include <zmq.h>
 #include <string>
-#include "HobotNetwork/HobotClientBase.h"
 #include "HobotNetwork/HobotZmqClient.h"
 int main(int argc, char **argv) {
   std::string ip;
@@ -30,13 +29,13 @@ int main(int argc, char **argv) {
   int bufflen = 2 * 1024 * 1024;
   void *buf = malloc(bufflen);
   memset(buf, 0, bufflen);
-  while (true) {
-    client.RecvData(nullptr, 0);
-    int size = client.CopyRecvData(buf, bufflen);
-    printf("RecvData size =%d \n", size);
-    memset(buf, 0, bufflen);
-    // sleep(1);
+  for (int i = 0; i < 10; ++i) {
+    client.SendData("Hello", 6);
+    size_t buflen = 10;
+    void *buf = malloc(buflen);
+    int sz = client.RecvData(buf, buflen);
+    printf("recv datasize = %d \n", sz);
   }
-
+  client.Finish();
   return 0;
 }

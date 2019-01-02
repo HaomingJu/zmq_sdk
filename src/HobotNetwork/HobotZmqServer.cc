@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 #include <zmq.h>
 #include "hobotlog/hobotlog.hpp"
 int HobotZmqServer::Init(const char *config) {
@@ -18,22 +19,20 @@ int HobotZmqServer::Init(const char *config) {
     LOGD << "config null ";
     return 1;
   }
-  std::string ip = config;
 
-  void *context = zmq_ctx_new();
-  if (!context) {
+  m_context = zmq_ctx_new();
+  if (!m_context) {
     LOGD << "zmq_ctx_new failed ";
     return 1;
   }
 
-  m_requester = zmq_socket(context, ZMQ_PUB);
+  m_requester = zmq_socket(m_context, ZMQ_REP);
   if (!m_requester) {
     LOGD << "zmq_socket failed ";
     return 1;
   }
 
-
-  int zmq_sndhwm = 10;  // message
+  int zmq_sndhwm = 10;
   int zmq_sndbuf = 50 * 1024 * 1024;
 
   zmq_setsockopt(m_requester, ZMQ_SNDHWM, &zmq_sndhwm, sizeof(int));
@@ -43,25 +42,29 @@ int HobotZmqServer::Init(const char *config) {
   int zmq_snd_to = 500;
   zmq_setsockopt(m_requester, ZMQ_SNDTIMEO, &zmq_snd_to, sizeof(int));
 
-  int con_ret = zmq_bind(m_requester, ip.c_str());
+  int con_ret = zmq_bind(m_requester, config);
   if (con_ret == -1) {
     LOGD << "zmq_bind failed ";
     return 1;
   }
-
-  zmq_msg_init(&m_msg);
-  zmq_msg_init_size(&m_msg, 2 * 1024 * 1024);
+  m_buff_size = 2 * 1024 * 1024;
+  m_buff = malloc(m_buff_size);
   return 0;
 }
-static int SendSingleMsg(void *s, zmq_msg_t &msg, int flag) {
-  int rc = 0;
 
-  bool bTryAgain = true;
-  while (bTryAgain) {
-    rc = zmq_msg_send(&msg, s, flag);
-    if (rc >= 0) {
-      bTryAgain = false;
-    } else {
+int HobotZmqServer::SendData(const void *data, size_t datalen, bool sync, MQCallBack callback) {
+  if (!data || datalen <= 0) {
+    LOGD << "data null";
+    return 1;
+  }
+  int send_size = 0;
+  bool tryAgain = true;
+  while (tryAgain) { 
+    send_size = zmq_send(m_requester, data, datalen, 0);
+    if(send_size >= 0) {
+      tryAgain = false ;
+    }
+    else {
       if (errno == EAGAIN || errno == EINTR) {
 #ifdef _WIN32
         Sleep(10);
@@ -76,25 +79,42 @@ static int SendSingleMsg(void *s, zmq_msg_t &msg, int flag) {
         return -1;
       }
     }
-  }  // end while
-
-  return 0;
+  }
+  return send_size;
 }
 
-int HobotZmqServer::SendData(void *data, int datalen, MQCallBack callback) {
-  if (!data || datalen <= 0) {
-    LOGD << "data null";
-    return 1;
+int HobotZmqServer::RecvData(void *buff, size_t bufflen) {
+  int recv_size = 0;
+  if(buff != nullptr) {
+    recv_size = zmq_recv(m_requester, buff, bufflen, 0);
+    if (recv_size == -1) {
+      LOGD << "zmq_rcv_data failed in Server";
+    }
   }
-  int meta_send_flag = ZMQ_NOBLOCK;
-  zmq_msg_t msg;
-
-
-  int ret = zmq_msg_init_data(&msg, data, datalen, nullptr, nullptr);
-  if (ret != 0) {
-    LOGD << "retzmq_msg_init_data failed";
-    return 1;
+  else{
+    recv_size = zmq_recv(m_requester, m_buff, m_buff_size, 0);
+    if (recv_size == -1) {
+      LOGD << "zmq_rcv_data failed in Server";
+    }else if (bufflen && m_buff_size > 0) {
+      int len = (bufflen > m_buff_size) ? m_buff_size : bufflen;
+      memcpy(buff, m_buff, len);
+    }
   }
+  return recv_size;
+}
 
-  return SendSingleMsg(m_requester, msg, meta_send_flag);
+int HobotZmqServer::CopyRecvData(void *buff, size_t bufflen) {
+  assert(buff == nullptr);
+  int len = 0;
+  if (bufflen && m_buff_size > 0) {
+    len = (bufflen > m_buff_size) ? m_buff_size : bufflen;
+    memcpy(buff, m_buff, len);
+  }
+  return len;
+}
+
+void HobotZmqServer::Finish() {
+  zmq_close(m_requester);
+  zmq_ctx_destroy(m_context);
+  free(m_buff);
 }
