@@ -5,7 +5,9 @@ set(CPP_FILES
     HobotNetwork/HobotZmqClient.cc
     HobotNetwork/HobotZmqServer.cc
     HobotNetwork/HobotNetworkInstance.cc
-    utils/CommunicationProtocol.cc)
+    utils/CommunicationProtocol.cc
+    HobotProtocol/HobotProtocolWrite.cc 
+    HobotProtocol/HobotProtocolRead.cc)
 
 
 set(library_list
@@ -23,7 +25,8 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
 install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotNetwork/HobotZmqClient.h" DESTINATION include)
 install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotNetwork/HobotZmqServer.h" DESTINATION include)
 install(FILES "${zmq_sdk_INCLUDE_DIRS}/utils/CommunicationProtocol.h" DESTINATION include)
-
+install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotProtocol/HobotProtocolWrite.h" DESTINATION include)
+install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotProtocol/HobotProtocolRead.h" DESTINATION include)
 
 target_link_libraries(
     ${PROJECT_NAME}
