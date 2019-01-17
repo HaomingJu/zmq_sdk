@@ -6,3 +6,6 @@ build.properties
 .gradle/
 .vscode/
 output_linux_x86/
+out*
+.gradle
+*.log

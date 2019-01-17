@@ -1,19 +1,36 @@
-cmake_minimum_required(VERSION 2.8)
-
+cmake_minimum_required(VERSION 3.0)
 include(cmake/hobot_util.cmake)
+project(multi_modal)
 
-project(zmq_sdk)
+#include(config.cmake)
+#set(CMAKE_CXX_COMPILER /usr/bin/g++-4.9)
+#set(CMAKE_C_COMPILER /usr/bin/gcc-4.9)
 
-set(CMAKE_CXX_STANDARD 11)
+message("config types: ${CMAKE_CONFIGURATION_TYPES}")
+message("platform is ${_PLATFORM}")
+message("architecture is ${_ARCHITECTURE}")
+message("install dir is ${_INSTALL_DIR}")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC -Wall -g")
-
-include_directories(./src/)
-
+set(PROJECT_ROOT ${PROJECT_SOURCE_DIR})
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_INSTALL_PREFIX ${_INSTALL_DIR})
-
-set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
-        CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-function")
+set(zmq_sdk_INCLUDE_DIRS ${PROJECT_ROOT}/include )
+set(TRANSFER_PROJECT_DIRS ${PROJECT_ROOT}/src/HobotDataTransfer )
+add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)
+add_definitions(-DHR_${_PLATFORM})
+add_definitions(-DHR_${_ARCHITECTURE})
+add_definitions(-DHR_POSIX)
+add_definitions(-DHR_LINUX)
+add_definitions(-DDMS_TIME_DEBUG)
+add_definitions(-DPROC_NAME_ENABLE)
+add_definitions("-Wall -g")
+#add_definitions("-unresolved-symbols=ignore-in-shared-libs")
+#add_definitions("--no-undefined")
 
 add_subdirectory(src)
 add_subdirectory(test)

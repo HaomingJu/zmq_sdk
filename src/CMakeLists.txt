@@ -1,33 +1,7 @@
-project(HobotNetwork)
-
-file(GLOB CPP_FILES *.cc)
-set(CPP_FILES
-    HobotNetwork/HobotZmqClient.cc
-    HobotNetwork/HobotZmqServer.cc
-    HobotNetwork/HobotNetworkInstance.cc
-    utils/CommunicationProtocol.cc
-    HobotProtocol/HobotProtocolWrite.cc 
-    HobotProtocol/HobotProtocolRead.cc)
-
-
-set(library_list
-    zmq
-    hobotlog)
-
 include_directories(
     ${zmq_sdk_INCLUDE_DIRS})
-
-#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${PROJECT_SOURCE_DIR}/symbols.lst")
-
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
-
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)
-install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotNetwork/HobotZmqClient.h" DESTINATION include)
-install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotNetwork/HobotZmqServer.h" DESTINATION include)
-install(FILES "${zmq_sdk_INCLUDE_DIRS}/utils/CommunicationProtocol.h" DESTINATION include)
-install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotProtocol/HobotProtocolWrite.h" DESTINATION include)
-install(FILES "${zmq_sdk_INCLUDE_DIRS}/HobotProtocol/HobotProtocolRead.h" DESTINATION include)
-
-target_link_libraries(
-    ${PROJECT_NAME}
-    ${library_list})
+#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${PROJECT_SOURCE_DIR}/src/symbols.lst")
+add_subdirectory(HobotDataTransfer)
+add_subdirectory(HobotNetwork)
+add_subdirectory(utils)
+add_subdirectory(HobotProtocol)

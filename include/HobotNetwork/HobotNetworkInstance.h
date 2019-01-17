@@ -10,10 +10,10 @@
 
 #include <zmq.h>
 class HobotClientBase {
-  public:
+ public:
   virtual ~HobotClientBase() {}
   virtual int Init(const char *config) = 0;
-  virtual int SendData(const void *data = nullptr, size_t datalen = 0) = 0; 
+  virtual int SendData(const void *data = nullptr, size_t datalen = 0) = 0;
   virtual int RecvData(void *buff = nullptr, size_t bufflen = 0) = 0;
   virtual int CopyRecvData(void *buff, size_t bufflen) = 0;
   virtual void Finish() = 0;
@@ -22,11 +22,11 @@ class HobotClientBase {
 typedef void (*MQCallBack)(void *data, void *hint);
 
 class HobotServerBase {
-  public:
+ public:
   virtual ~HobotServerBase() {}
   virtual int Init(const char *config) = 0;
-  virtual int SendData(const void *data = nullptr,
-   size_t datalen = 0, bool sync = true, MQCallBack callback = nullptr) = 0;
+  virtual int SendData(const void *data = nullptr, size_t datalen = 0,
+                       bool sync = true, MQCallBack callback = nullptr) = 0;
   virtual int RecvData(void *buff = nullptr, size_t bufflen = 0) = 0;
   virtual int CopyRecvData(void *buff, size_t bufflen) = 0;
   virtual void Finish() = 0;
@@ -37,15 +37,14 @@ enum HobotNetworkType {
   HOBOT_HBIPC = 1,
 };
 
-class HobotNetworkInstance{
-public:
-   HobotNetworkInstance() {}
-   ~HobotNetworkInstance() {}
-   HobotClientBase *CreateClientInstance(HobotNetworkType type);
-   HobotServerBase *CreateServerInstance(HobotNetworkType type);
-   void DestroyClientInstance(HobotClientBase *client_instance);
-   void DestroyServerInstance(HobotServerBase *server_instance);
-
+class HobotNetworkInstance {
+ public:
+  HobotNetworkInstance() {}
+  ~HobotNetworkInstance() {}
+  HobotClientBase *CreateClientInstance(HobotNetworkType type);
+  HobotServerBase *CreateServerInstance(HobotNetworkType type);
+  void DestroyClientInstance(HobotClientBase *client_instance);
+  void DestroyServerInstance(HobotServerBase *server_instance);
 };
 
 #endif /* HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTNETWORKINSTANCE_H_ */
