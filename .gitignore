@@ -3,3 +3,6 @@ dep_linux_armhf_matrix.tmp
 dep_linux.tmp
 build/
 build.properties
+.gradle/
+.vscode/
+output_linux_x86/
