@@ -11,6 +11,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "hobotlog/hobotlog.hpp"
+
+namespace Modo {
 int HobotZmqClient::Init(const char *config) {
   if (!config) {
     LOGE << "config null ";
@@ -76,7 +78,8 @@ int HobotZmqClient::CopyRecvData(void *buff, size_t bufflen) {
   return len;
 }
 
-int HobotZmqClient::SendData(const void *data, size_t datalen) {
+int HobotZmqClient::SendData(const void *data, size_t datalen,
+                             bool sync, MQCallBack callback) {
   if (!data || datalen <= 0) {
     LOGD << "data null";
     return 1;
@@ -110,4 +113,5 @@ void HobotZmqClient::Finish() {
   zmq_close(m_requester);
   zmq_ctx_destroy(m_context);
   free(m_buff);
+}
 }

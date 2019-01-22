@@ -12,6 +12,9 @@
 #include "SendModule/SendModule.h"
 #include "hobotlog/hobotlog.hpp"
 #include "message/BuffMsg.h"
+#include "HobotNetwork/HobotNetworkInstance.h"
+#include "HobotProtocol/HobotProtocolWrite.h"
+
 namespace Modo {
 class MutiRunObserver : public hobot::RunObserver {
  public:
@@ -64,7 +67,7 @@ void HobotDataTransfer::Finish() {
   if (engine_)
     delete engine_;
   engine_ = NULL;
-
+  delete network_;
   inited_ = false;
 }
 void HobotDataTransfer::ExecuteOnThread() {
@@ -95,6 +98,16 @@ int HobotDataTransfer::Init(const char *ip, SericeType type) {
 int HobotDataTransfer::InitNetWork(const char *ip, SericeType type) {
   // todo:根据SericeType 创建network实例-->根据ip，初始化network实例
   // todo:network_ =
+  HobotNetworkInstance ins;
+  switch(type) {
+    case TRANSFER_SEVER:
+      network_ = ins.CreateServerInstance(HOBOT_ZMQ);
+      break;    
+    case TRANSFER_CLINET:
+      network_ = ins.CreateClientInstance(HOBOT_ZMQ);
+      break;
+  }
+  network_->Init(ip);
   return 0;
 }
 typedef std::vector<std::pair<hobot::Module *, int>> ObserverBinding;
@@ -197,10 +210,17 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
     LOGE << "new  SendMsg failed";
     return 1;
   }
-  // buff = sp_send_msg->GetBuff()
-  //  while(){
-  //   write to buff
-  //  }
+  
+  int8_t* buff = sp_send_msg->GetBuff();
+  int bufflen = sp_send_msg->GetBuffSize();
+  HobotProtocolWrite writer(buff, bufflen);
+  int length = 0;
+  writer.WriteHead(length, 0 , 0, 0);
+  for(auto &msg : msgs) {
+    writer.WriteTLV(msg.type, msg.datalen, (int8_t*) msg.data);
+  }
+  length = writer.GetPackageLength();
+  writer.WriteHead(length, 0, 0, 0);
 
   LOGD << "HobotDataTransfer::Send";
   workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
@@ -215,12 +235,20 @@ int HobotDataTransfer::Send(MsgType type, void *data, int datalen) {
     LOGE << "new  SendMsg failed";
     return 1;
   }
-  // buff = sp_send_msg->GetBuff()
-  //
-  //   write to buff
-  //
 
   LOGD << "HobotDataTransfer::Send";
+
+  int8_t* buff = sp_send_msg->GetBuff();
+  int bufflen = sp_send_msg->GetBuffSize();
+  HobotProtocolWrite writer(buff, bufflen);
+  int len_snd = 0;
+  /* take the `place` of header */
+  writer.WriteHead(0, 0, 0, 0);
+  writer.WriteTLV(type, datalen, (int8_t *)data);
+  len_snd = writer.GetPackageLength();
+  /* rewrite the header        */
+  writer.WriteHead(len_snd, 0 ,0 ,0);
+
   workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   return 0;
 }

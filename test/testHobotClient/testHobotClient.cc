@@ -13,6 +13,9 @@
 #include <zmq.h>
 #include <string>
 #include "HobotNetwork/HobotZmqClient.h"
+
+using namespace Modo;
+
 int main(int argc, char **argv) {
   std::string ip;
   std::string port;

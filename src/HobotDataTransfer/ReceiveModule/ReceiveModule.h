@@ -9,7 +9,7 @@
 #define ZMQ_SDK_SRC_HOBOTDATATRANSFER_RECEIVEMODULE_RECEIVEMODULE_H_
 #include <hobot/hobot.h>
 #include <memory>
-
+#include "HobotNetwork/HobotNetworkInstance.h"
 namespace Modo {
 class HobotNetworkBase;
 class ReceiveModule : public hobot::Module {

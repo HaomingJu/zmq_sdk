@@ -12,14 +12,15 @@
 #include "HobotNetworkInstance.h"
 #include <zmq.h>
 
-class HobotZmqServer: public HobotServerBase {
+namespace Modo {
+class HobotZmqServer: public HobotNetworkBase {
  public:
-  HobotZmqServer() : m_context(nullptr), 
-  m_requester(nullptr), m_buff(nullptr), m_buff_size(0) {}
+  HobotZmqServer() : m_context(nullptr), m_requester(nullptr), 
+                     m_buff(nullptr), m_buff_size(0) {}
   ~HobotZmqServer() {}
   int Init(const char *config);
   int SendData(const void *data = nullptr, size_t datalen = 0,
-   bool sync = true, MQCallBack callback = nullptr);
+               bool sync = true, MQCallBack callback = nullptr);
   int RecvData(void *buff = nullptr, size_t bufflen = 0);
   int CopyRecvData(void *buff, size_t bufflen);
   void Finish();
@@ -30,5 +31,5 @@ class HobotZmqServer: public HobotServerBase {
   void *m_buff;
   size_t m_buff_size;
 };
-
+}
 #endif /* HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQSEVER_H_ */

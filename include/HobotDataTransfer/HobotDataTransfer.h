@@ -11,7 +11,10 @@
 #include <functional>
 #include <memory>
 #include <vector>
+// #include "HobotNetwork/HobotNetworkInstance.h"
+
 namespace hobot {
+class HobotNetworkBase;
 class Engine;
 class Workflow;
 class RunContext;

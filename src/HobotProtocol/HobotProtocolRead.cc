@@ -4,17 +4,18 @@
 #include <memory.h>
 #include <stdio.h>
 
+namespace Modo{
 HobotProtocolRead::HobotProtocolRead(int8_t *buff, int bufflen) {
-    m_buff = buff;
-    m_bufflen = bufflen;
-    IsEdian = false;
-    // check  Edian
+    m_buff_ = buff;
+    m_bufflen_ = bufflen;
+    IsEdianDiff_ = false;
+    /* check  EdianDiff */
     int32_t version = 0;
     memcpy(&version, buff + 4, 4);
     if((uint32_t)version > 0x0000FFFFu) {
-        IsEdian = true;
+        IsEdianDiff_ = true;
     }
-    pos = 0;
+    pos_ = 0;
 }
 
 void HobotProtocolRead::Swap16(int16_t &value) {
@@ -42,12 +43,12 @@ void HobotProtocolRead::Swap64(int64_t &value) {
 
 void HobotProtocolRead::ReadHead(int32_t &length, int32_t &version, 
 int64_t &stamp, int64_t &seq) {
-    memcpy(&length, m_buff, 4);
-    memcpy(&version, m_buff + 4, 4);
-    memcpy(&stamp, m_buff + 8, 8);
-    memcpy(&seq, m_buff + 16, 8);
-    pos += 24;
-    if(IsEdian) {
+    memcpy(&length, m_buff_, 4);
+    memcpy(&version, m_buff_ + 4, 4);
+    memcpy(&stamp, m_buff_ + 8, 8);
+    memcpy(&seq, m_buff_ + 16, 8);
+    pos_ += 24;
+    if(IsEdianDiff_) {
         Swap32(length);
         Swap32(version);
         Swap64(stamp);
@@ -55,16 +56,27 @@ int64_t &stamp, int64_t &seq) {
     }
 }
 
-void HobotProtocolRead::ReadTLV(valueType &type, int32_t &length, 
-int8_t *value) {
-    memcpy(&type, m_buff + pos, 4);
-    memcpy(&length, m_buff + pos + 4, 4);
-    memcpy(value, m_buff + pos + 8, length);
-    pos = pos + 8 + length;
-    if(IsEdian) {
-        int32_t tp = type;
-        Swap32(tp);
-        type = valueType(tp);
+// void HobotProtocolRead::ReadTLV(int &type, int32_t &length, 
+// int8_t *value) {
+//     memcpy(&type, m_buff_ + pos_, 4);
+//     memcpy(&length, m_buff_ + pos_ + 4, 4);
+//     memcpy(value, m_buff_ + pos_ + 8, length);
+//     pos_ = pos_ + 8 + length;
+//     if(IsEdianDiff_) {
+//         Swap32(type);
+//         Swap32(length);
+//     }
+// }
+
+void HobotProtocolRead::ReadTLV(int &type, int32_t &length, 
+int8_t **value) {
+    memcpy(&type, m_buff_ + pos_, 4);
+    memcpy(&length, m_buff_ + pos_ + 4, 4);
+    *value = m_buff_ + pos_ + 8;
+    pos_ = pos_ + 8 + length;
+    if(IsEdianDiff_) {
+        Swap32(type);
         Swap32(length);
     }
+}
 }

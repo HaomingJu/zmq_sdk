@@ -9,6 +9,7 @@
 #define ZMQ_SDK_SRC_HOBOTDATATRANSFER_SENDMODULE_SENDMODULE_H_
 #include <hobot/hobot.h>
 #include <memory>
+#include "HobotNetwork/HobotNetworkInstance.h"
 
 namespace Modo {
 class HobotNetworkBase;

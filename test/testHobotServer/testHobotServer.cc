@@ -14,6 +14,8 @@
 #include <string>
 #include "HobotNetwork/HobotNetworkInstance.h"
 #include "HobotNetwork/HobotZmqServer.h"
+
+using namespace Modo;
 int main(int argc, char **argv) {
   std::string ip;
   std::string port;

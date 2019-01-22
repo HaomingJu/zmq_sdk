@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <zmq.h>
 #include "hobotlog/hobotlog.hpp"
+namespace Modo {
 int HobotZmqServer::Init(const char *config) {
   if (!config) {
     LOGD << "config null ";
@@ -117,4 +118,5 @@ void HobotZmqServer::Finish() {
   zmq_close(m_requester);
   zmq_ctx_destroy(m_context);
   free(m_buff);
+}
 }

@@ -3,27 +3,39 @@
 #include "HobotNetwork/HobotZmqClient.h"
 #include <stdio.h>
 
-HobotClientBase* HobotNetworkInstance::CreateClientInstance(HobotNetworkType type) {
-    HobotClientBase* client_instance;
+namespace Modo{
+HobotNetworkBase* HobotNetworkInstance::CreateClientInstance(HobotNetworkType type) {
+    HobotNetworkBase* client;
     if(type == HOBOT_ZMQ) {
-        // in stack
-        client_instance = new HobotZmqClient();    
+        client = new HobotZmqClient();
     }
-    return client_instance;
+    return client;
 }
 
-HobotServerBase* HobotNetworkInstance::CreateServerInstance(HobotNetworkType type) {
-    HobotServerBase* server_instance;
+HobotNetworkBase* HobotNetworkInstance::CreateServerInstance(HobotNetworkType type) {
+    HobotNetworkBase* server;
     if(type == HOBOT_ZMQ) {
-        server_instance = new HobotZmqServer();    
+        server = new HobotZmqServer();
     }
-    return server_instance;
+    return server;
 }
+// HobotNetworkBase* HobotNetworkInstance::CreateClientInstance(HobotNetworkType type) {
+//     HobotNetworkBase* client_instance;
+//     if(type == HOBOT_ZMQ) {
+//         client_instance = new HobotZmqClient();    
+//     }
+//     return client_instance;
+// }
 
-void HobotNetworkInstance::DestroyClientInstance(HobotClientBase *client_instance) {
-    delete client_instance;
+// HobotNerworkBase* HobotNetworkInstance::CreateServerInstance(HobotNetworkType type) {
+//     HobotNetworkBase* server_instance;
+//     if(type == HOBOT_ZMQ) {
+//         server_instance = new HobotZmqServer();    
+//     }
+//     return server_instance;
+// }
+
+void HobotNetworkInstance::DestroyNetworkInstance(HobotNetworkBase* net_instance) {
+    delete net_instance;
 }
-
-void HobotNetworkInstance::DestroyServerInstance(HobotServerBase *server_instance) {
-    delete server_instance;
 }

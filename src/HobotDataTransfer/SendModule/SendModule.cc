@@ -9,6 +9,8 @@
 #include "../../HobotDataTransfer/SendModule/SendModule.h"
 #include "../message/BuffMsg.h"
 #include "hobotlog/hobotlog.hpp"
+#include "HobotNetwork/HobotNetworkInstance.h"
+
 namespace Modo {
 FORWARD_DEFINE(SendModule, 0) {
   // LOGD << "SendModule::DoForward";
@@ -33,6 +35,9 @@ void SendModule::DoForward(const hobot::MessageLists &input,
   spSendMsg sp_send_msg = std::dynamic_pointer_cast<SendMsg>(spMsg);
   LOGE << "DO SendModule DoForward ";
   // todo: 完善发送流程：取出消息-->调用通信接口发送
+  void* data = sp_send_msg->GetBuff();
+  int datalen = sp_send_msg->GetBuffSize();
+  sender_->SendData(data, datalen);
 
   workflow->Return(this, 0, hobot::spMessage(), context);
 }
