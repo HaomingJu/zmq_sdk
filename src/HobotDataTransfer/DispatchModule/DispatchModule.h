@@ -30,6 +30,7 @@ class DispatchModule : public hobot::Module {
   //  std::string GetConfigPathName(hobot::RunContext *context);
   void DoForward(const hobot::MessageLists &input, hobot::Workflow *workflow,
                  hobot::spRunContext &context, std::string MODULE_NAME);
+  void SwapData(struct DataTransferInputMsg &msg);
 
  private:
   TransferCallBack user_callback_;

@@ -14,11 +14,13 @@
 
 namespace Modo {
 int HobotZmqClient::Init(const char *config) {
+  SetLogLevel(HOBOT_LOG_DEBUG);
   if (!config) {
     LOGE << "config null ";
     printf("1\n");
     return 1;
   }
+  LOGD << "HobotZmqClient Init config= " << config;
 
   m_context = zmq_ctx_new();
   if (!m_context) {
@@ -27,7 +29,7 @@ int HobotZmqClient::Init(const char *config) {
     return 1;
   }
 
-  m_requester = zmq_socket(m_context, ZMQ_REQ);
+  m_requester = zmq_socket(m_context, ZMQ_DEALER);
   if (!m_requester) {
     LOGE << "zmq_socket failed ";
     printf("3\n");
@@ -49,11 +51,12 @@ int HobotZmqClient::Init(const char *config) {
 }
 
 int HobotZmqClient::RecvData(void *buff, size_t bufflen) {
+  SetLogLevel(HOBOT_LOG_DEBUG);
   int recv_size = 0;
   if (buff != nullptr) {
     recv_size = zmq_recv(m_requester, buff, bufflen, 0);
     if (recv_size == -1) {
-      LOGD << "zmq_rcv_data failed in Server";
+      LOGD << "zmq_rcv_data failed in Client";
     }
   } else {
     recv_size = zmq_recv(m_requester, m_buff, m_buff_size, 0);
@@ -78,11 +81,11 @@ int HobotZmqClient::CopyRecvData(void *buff, size_t bufflen) {
   return len;
 }
 
-int HobotZmqClient::SendData(const void *data, size_t datalen,
-                             bool sync, MQCallBack callback) {
+int HobotZmqClient::SendData(const void *data, size_t datalen, bool sync,
+                             MQCallBack callback) {
   if (!data || datalen <= 0) {
     LOGD << "data null";
-    return 1;
+    return -1;
   }
   int send_size = 0;
   bool tryAgain = true;

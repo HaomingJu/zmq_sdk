@@ -31,15 +31,17 @@ int main(int argc, char **argv) {
   server.Init(ipstr.c_str());
   char str[] = "World";
   while (true) {
-    size_t buflen = 1024 * 1024;
-    void *buf = malloc(buflen);
-    memset(buf, 0, buflen);
-    int sz = server.RecvData(buf, buflen);
-    printf("recv datasize = %d", sz);
+    //  size_t buflen = 1024 * 1024;
+    // void *buf = malloc(buflen);
+    // memset(buf, 0, buflen);
+    char buff[128];
+
     // printf("begin Send \n");
     // printf("begin Send=%s \n", str);
-    server.SendData("World", 6);
-    printf("Send=%s \n", str);
+    int ret = server.SendData("World", 6);
+    // int sz = server.RecvData(buff, 128);
+    //  printf("recv datasize = %d,buf = %s\n", sz,buff);
+    printf("Send=%d\n", ret);
     sleep(1);
   }
   server.Finish();

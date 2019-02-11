@@ -7,9 +7,9 @@
 
 //#include <hobot/hobot.h>
 #include "ReceiveModule.h"
+#include "HobotNetwork/HobotNetworkInstance.h"
 #include "hobotlog/hobotlog.hpp"
 #include "message/BuffMsg.h"
-#include "HobotNetwork/HobotNetworkInstance.h"
 
 namespace Modo {
 FORWARD_DEFINE(ReceiveModule, 0) {
@@ -24,11 +24,14 @@ void ReceiveModule::DoForward(const hobot::MessageLists &input,
 
   spReceiveMsg sp_receive_msg = ReceiveBuffMsgPool::GetSharedPtrEx(true);
   // todo: 完善接收流程： 将接收数据放入缓存buff-->发送到dispatch模块
-  void* data = sp_receive_msg->GetBuff();
+  void *data = sp_receive_msg->GetBuff();
   int datalen = sp_receive_msg->GetBuffSize();
-  receive_->RecvData(data, datalen);
-  
-  workflow->Return(this, 0, sp_receive_msg, context);
+  LOGD << "do RecvData begin";
+  int ret = receive_->RecvData(data, datalen);
+  LOGD << "do RecvData end,ret = " << ret;
+  if (ret > 0) {
+    workflow->Return(this, 0, sp_receive_msg, context);
+  }
 
   // Reschedule time modify 1ms
   workflow->Reschedule(this, 0, input, context, 1000);

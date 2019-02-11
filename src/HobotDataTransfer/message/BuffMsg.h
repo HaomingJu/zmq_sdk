@@ -18,16 +18,19 @@ class BuffMsg : public BaseMsg {
   // todo:miaowangqian
   int8_t *GetBuff() { return buff_.data(); }
   int GetBuffSize() { return buff_.size(); }
+  void SetDataSize(int datalen) { datalen_ = datalen; }
+  int GetDataSize() { return datalen_; }
   void ResizeBuff(int size) { buff_.resize(size); }
 
  protected:
   BuffMsg() { buff_.resize(BUFF_SIZE); }
-  void Reset() {}
+  void Reset() { datalen_ = 0; }
 
   bool DeepCopy(const BaseMsg *other) { return true; }
 
  private:
   std::vector<int8_t> buff_;
+  int datalen_;
 };
 class SendMsg : public BuffMsg {
   friend class MemPool<SendMsg>;

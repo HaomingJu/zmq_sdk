@@ -12,15 +12,17 @@
 
 namespace Modo {
 class HobotProtocolWrite {
-public:
-  HobotProtocolWrite(int8_t *buff, int bufflen) : m_buff_(buff), 
-  m_bufflen_(bufflen) { pos_ = 0; }
-  void WriteHead(int32_t length, int32_t version, int64_t stamp, int64_t seq);
+ public:
+  HobotProtocolWrite(int8_t *buff, int bufflen)
+      : m_buff_(buff), m_bufflen_(bufflen) {
+    pos_ = 24;
+  }
+  void WriteHead(int32_t version, int64_t stamp, int64_t seq);
   void WriteTLV(int type, int32_t length, int8_t *value);
   int GetPackageLength();
   int8_t *GetPackageBuff();
 
-private:
+ private:
   int8_t *m_buff_;
   int m_bufflen_;
   int pos_;

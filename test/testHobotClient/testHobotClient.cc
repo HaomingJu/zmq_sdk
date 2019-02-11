@@ -33,11 +33,13 @@ int main(int argc, char **argv) {
   void *buf = malloc(bufflen);
   memset(buf, 0, bufflen);
   for (int i = 0; i < 10; ++i) {
-    client.SendData("Hello", 6);
+    //  int ret = client.SendData("Hello", 6);
     size_t buflen = 10;
-    void *buf = malloc(buflen);
-    int sz = client.RecvData(buf, buflen);
-    printf("recv datasize = %d \n", sz);
+    // void *buf = malloc(buflen);
+    char buff[128];
+    int sz = client.RecvData(buf, 128);
+    printf("RecvData datasize = %d,buf=%s \n", sz, buf);
+    sleep(1);
   }
   client.Finish();
   return 0;

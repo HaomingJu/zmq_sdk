@@ -7,15 +7,17 @@
 
 
 #include "HobotNetwork/HobotZmqServer.h"
+#include <assert.h>
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <assert.h>
 #include <zmq.h>
 #include "hobotlog/hobotlog.hpp"
 namespace Modo {
 int HobotZmqServer::Init(const char *config) {
+  SetLogLevel(HOBOT_LOG_DEBUG);
+  LOGD << "config= " << config;
   if (!config) {
     LOGD << "config null ";
     return 1;
@@ -27,7 +29,7 @@ int HobotZmqServer::Init(const char *config) {
     return 1;
   }
 
-  m_requester = zmq_socket(m_context, ZMQ_REP);
+  m_requester = zmq_socket(m_context, ZMQ_DEALER);
   if (!m_requester) {
     LOGD << "zmq_socket failed ";
     return 1;
@@ -53,19 +55,19 @@ int HobotZmqServer::Init(const char *config) {
   return 0;
 }
 
-int HobotZmqServer::SendData(const void *data, size_t datalen, bool sync, MQCallBack callback) {
+int HobotZmqServer::SendData(const void *data, size_t datalen, bool sync,
+                             MQCallBack callback) {
   if (!data || datalen <= 0) {
     LOGD << "data null";
     return 1;
   }
   int send_size = 0;
   bool tryAgain = true;
-  while (tryAgain) { 
+  while (tryAgain) {
     send_size = zmq_send(m_requester, data, datalen, 0);
-    if(send_size >= 0) {
-      tryAgain = false ;
-    }
-    else {
+    if (send_size >= 0) {
+      tryAgain = false;
+    } else {
       if (errno == EAGAIN || errno == EINTR) {
 #ifdef _WIN32
         Sleep(10);
@@ -86,17 +88,16 @@ int HobotZmqServer::SendData(const void *data, size_t datalen, bool sync, MQCall
 
 int HobotZmqServer::RecvData(void *buff, size_t bufflen) {
   int recv_size = 0;
-  if(buff != nullptr) {
+  if (buff != nullptr) {
     recv_size = zmq_recv(m_requester, buff, bufflen, 0);
     if (recv_size == -1) {
       LOGD << "zmq_rcv_data failed in Server";
     }
-  }
-  else{
+  } else {
     recv_size = zmq_recv(m_requester, m_buff, m_buff_size, 0);
     if (recv_size == -1) {
       LOGD << "zmq_rcv_data failed in Server";
-    }else if (bufflen && m_buff_size > 0) {
+    } else if (bufflen && m_buff_size > 0) {
       int len = (bufflen > m_buff_size) ? m_buff_size : bufflen;
       memcpy(buff, m_buff, len);
     }
