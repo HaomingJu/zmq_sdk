@@ -8,7 +8,7 @@ include_directories(
 add_executable(${PROJECT_NAME} ${CPP_FILES})
 
 target_link_libraries(${PROJECT_NAME}
-        utils)
+        HobotDataTransfer)
 
 install (TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin)

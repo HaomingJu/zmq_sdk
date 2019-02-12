@@ -75,9 +75,6 @@ int HobotZmqServer::SendData(const void *data, size_t datalen, bool sync,
         usleep(10000);
 #endif
       } else {
-#ifdef __ANDROID__
-        ALOGE("ZMQ Get Error %s", strerror(errno));
-#endif
         LOGD << "ZMQ Get Error :" << strerror(errno);
         return -1;
       }

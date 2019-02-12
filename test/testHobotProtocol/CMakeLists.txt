@@ -7,8 +7,8 @@ include_directories(
 
 add_executable(${PROJECT_NAME} ${CPP_FILES})
 
-target_link_libraries(${PROJECT_NAME} 
-    HobotProtocol)
+target_link_libraries(${PROJECT_NAME}
+    HobotDataTransfer)
 
 
 install (TARGETS ${PROJECT_NAME}

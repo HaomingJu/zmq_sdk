@@ -1,0 +1,44 @@
+# platform [linux | win | mac | android]
+platform linux
+
+# architecture
+# linux [ x86(default), arm, ... ]
+# android [arm(default), x86 ,mpis, ...]
+
+architecture default
+
+# build type
+build_type release
+# build_type debug
+
+# cache root dir
+# do not change this if not necessary
+cache_root {USER_HOME}/.gradle/caches/modules-2/files-2.1/
+
+# dependency
+# dependencies repository
+# dependency_repository1  file:///data/artifactory
+dependency_repository2    http://ci.horizon-robotics.com:8081/artifactory/libs-release-local/
+repository2_username	deploy-alpha
+repository2_password	deploy-alpha@hobot.cc
+# dependency artifacts
+artifact1       com.hobot.native.hobot:hobot:1.4.4:zip:true
+artifact2       com.hobot.native.hobot:hobotlog:2.1.0:zip
+artifact3   com.hobot.native.hobot-dms:libzmq:4.2.3:zip
+
+# dependency exclude
+# pattern uri seperate by comma
+# artifact{n}_exclude {group_pattern}:{name_pattern},...
+# dependency exclude example
+# artifact{n}_exclude *:gtest,*:hobot
+
+# install repository
+#install_repository  file:///data/artifactory
+install_repository  http://ci.horizon-robotics.com:8081/artifactory/libs-release-local/
+username   deploy-alpha
+password   deploy-alpha@hobot.cc
+
+# install artifact
+install_artifact    com.hobot.native.example::1.0.0:zip
+
+
