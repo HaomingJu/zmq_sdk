@@ -30,19 +30,19 @@ int main(int argc, char **argv) {
   HobotZmqServer server;
   server.Init(ipstr.c_str());
   char str[] = "World";
+  int i = 0;
   while (true) {
-    //  size_t buflen = 1024 * 1024;
-    // void *buf = malloc(buflen);
-    // memset(buf, 0, buflen);
     char buff[128];
+    //  sprintf(buff, "world_%d", i);
 
     // printf("begin Send \n");
     // printf("begin Send=%s \n", str);
-    int ret = server.SendData("World", 6);
-    // int sz = server.RecvData(buff, 128);
-    //  printf("recv datasize = %d,buf = %s\n", sz,buff);
-    printf("Send=%d\n", ret);
+    // int ret = server.SendData(buff, strlen(buff));
+    int sz = server.RecvData(buff, 128);
+    printf("recv datasize = %d,buf = %s\n", sz, buff);
+    // printf("Send=%s\n", buff);
     sleep(1);
+    i++;
   }
   server.Finish();
   return 0;

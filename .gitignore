@@ -9,3 +9,4 @@ output_linux_x86/
 out*
 .gradle
 *.log
+*tmp

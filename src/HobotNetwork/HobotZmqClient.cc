@@ -35,9 +35,12 @@ int HobotZmqClient::Init(const char *config) {
     printf("3\n");
     return 1;
   }
+  int zmq_sndhwm = 1;
+  zmq_setsockopt(m_requester, ZMQ_SNDHWM, &zmq_sndhwm, sizeof(int));
 
   int rc = zmq_connect(m_requester, config);
   assert(rc == 0);
+
   /* you can set the socket here, plz read the zmq manual. */
   // int recvhwm = 5;
   // zmq_setsockopt(m_requester, ZMQ_REQ, "", 0);

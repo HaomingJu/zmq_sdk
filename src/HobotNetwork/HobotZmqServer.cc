@@ -35,7 +35,7 @@ int HobotZmqServer::Init(const char *config) {
     return 1;
   }
 
-  int zmq_sndhwm = 10;
+  int zmq_sndhwm = 1;
   int zmq_sndbuf = 50 * 1024 * 1024;
 
   zmq_setsockopt(m_requester, ZMQ_SNDHWM, &zmq_sndhwm, sizeof(int));

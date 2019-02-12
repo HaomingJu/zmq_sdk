@@ -16,11 +16,11 @@
 #cmake_cxx_compiler /home/haoming/software/ToolChain/joc/gcc-linaro-5.3-2016.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 
 ### linux arm matrix
-architecture armhf
+architecture arm-altera
 platform linux
-vendor matrix
-cmake_c_compiler /home/haoming/software/ToolChain/Matrix/linaro-arm-linux-gnueabihf-4.9/bin/arm-linux-gnueabihf-gcc
-cmake_cxx_compiler /home/haoming/software/ToolChain/Matrix/linaro-arm-linux-gnueabihf-4.9/bin/arm-linux-gnueabihf-g++
+vendor default
+cmake_c_compiler /home/user/ifs/linaro-arm-linux-gnueabihf-4.9/bin/arm-linux-gnueabihf-gcc
+cmake_cxx_compiler /home/user/ifs/linaro-arm-linux-gnueabihf-4.9/bin/arm-linux-gnueabihf-g++
 
 
 ### android

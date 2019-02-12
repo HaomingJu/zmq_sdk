@@ -30,15 +30,17 @@ int main(int argc, char **argv) {
   HobotZmqClient client;
   client.Init(ipstr.c_str());
   int bufflen = 2 * 1024 * 1024;
-  void *buf = malloc(bufflen);
-  memset(buf, 0, bufflen);
-  for (int i = 0; i < 10; ++i) {
-    //  int ret = client.SendData("Hello", 6);
-    size_t buflen = 10;
-    // void *buf = malloc(buflen);
+
+  for (int i = 0; i < 100000; ++i) {
     char buff[128];
-    int sz = client.RecvData(buf, 128);
-    printf("RecvData datasize = %d,buf=%s \n", sz, buf);
+    sprintf(buff, "world_%d", i);
+    int ret = client.SendData(buff, strlen(buff));
+    printf("SendData datasize = %d,buf=%s \n", ret, buff);
+    //    size_t buflen = 10;
+    //    // void *buf = malloc(buflen);
+    //    char buff[128];
+    //    int sz = client.RecvData(buf, 128);
+    //    printf("RecvData datasize = %d,buf=%s \n", sz, buf);
     sleep(1);
   }
   client.Finish();
