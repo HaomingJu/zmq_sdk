@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   transfer.SetReceiveCallback(client_call);
+  transfer.StartReceive();
   int i = 0;
   while (1) {
     char data[128] = {0};

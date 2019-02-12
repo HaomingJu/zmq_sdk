@@ -192,17 +192,12 @@ int HobotDataTransfer::InitWorkflow() {
 
 
   SendBuffMsgPool::Create(5, 10);
-
-
-  workflow_main_->Feed(workflow_main_rt_ctx_, trigger_send_, 0,
-                       hobot::spMessage());
-  workflow_main_->Feed(workflow_main_rt_ctx_, trigger_receive_, 0,
-                       hobot::spMessage());
-
-
   return 0;
 }
-
+void HobotDataTransfer::StartReceive() {
+  workflow_main_->Feed(workflow_main_rt_ctx_, trigger_receive_, 0,
+                       hobot::spMessage());
+}
 int HobotDataTransfer::Send(TransferVector &msgs) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
 

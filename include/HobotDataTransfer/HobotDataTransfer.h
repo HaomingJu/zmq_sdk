@@ -61,6 +61,7 @@ class HobotDataTransfer {
   int Send(TransferVector &msgs);
   int Send(MsgType type, void *data, int datalen);
   void SetReceiveCallback(TransferCallBack func);
+  void StartReceive();
   void Finish();
 
  protected:
