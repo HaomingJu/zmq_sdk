@@ -23,22 +23,25 @@ void ReceiveModule::DoForward(const hobot::MessageLists &input,
   LOGD << "ReceiveModule::DoForward";
 
   spReceiveMsg sp_receive_msg = ReceiveBuffMsgPool::GetSharedPtrEx(true);
-  // todo: 完善接收流程： 将接收数据放入缓存buff-->发送到dispatch模块
-  void *data = sp_receive_msg->GetBuff();
-  int datalen = sp_receive_msg->GetBuffSize();
-  LOGD << "do RecvData begin";
-  int ret = receive_->RecvData(data, datalen);
-  LOGD << "do RecvData end,ret = " << ret;
-  if (ret > 0) {
-    workflow->Return(this, 0, sp_receive_msg, context);
+  if (sp_receive_msg) {
+    // todo: 完善接收流程： 将接收数据放入缓存buff-->发送到dispatch模块
+    void *data = sp_receive_msg->GetBuff();
+    int datalen = sp_receive_msg->GetBuffSize();
+    LOGD << "do RecvData begin";
+    int ret = receive_->RecvData(data, datalen);
+    LOGD << "do RecvData end,ret = " << ret;
+    if (ret > 0) {
+      workflow->Return(this, 0, sp_receive_msg, context);
+    }
+  } else {
+    LOGE << "sp_receive_msg new failed!";
   }
-
   // Reschedule time modify 1ms
-  workflow->Reschedule(this, 0, input, context, 1000);
+  workflow->Reschedule(this, 0, input, context, 0);
 }
 int ReceiveModule::Init(hobot::RunContext *context) {
   LOGD << "Init";
-  ReceiveBuffMsgPool::Create(5, 10);
+  ReceiveBuffMsgPool::Create(10, 50);
   return 0;
 }
 void ReceiveModule::Reset() {

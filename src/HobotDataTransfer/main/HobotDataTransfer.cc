@@ -191,7 +191,7 @@ int HobotDataTransfer::InitWorkflow() {
   workflow_main_rt_ctx_->Init();
 
 
-  SendBuffMsgPool::Create(5, 10);
+  SendBuffMsgPool::Create(10, 20);
   return 0;
 }
 void HobotDataTransfer::StartReceive() {
@@ -214,9 +214,12 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
   int length = 0;
   writer.WriteHead(0, 0, 0);
   for (auto &msg : msgs) {
+    LOGD << "HobotDataTransfer::WriteTLV[" << msg.type << "," << msg.datalen
+         << "," << (char *)msg.data << "]";
     writer.WriteTLV(msg.type, msg.datalen, (int8_t *)msg.data);
   }
-  LOGD << "HobotDataTransfer::Send";
+  sp_send_msg->SetDataSize(writer.GetPackageLength());
+  LOGD << "HobotDataTransfer::Send length=" << writer.GetPackageLength();
   workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   return 0;
 }

@@ -26,13 +26,16 @@ class Module;
 }
 namespace Modo {
 enum MsgType {
-  MSG_JPEG,    // byte array
-  MSG_POROTO,  // byte array
-  MSG_ASR,     // byte array
-  MSG_CTL,
-  MSG_AUDIO,             // byte array
-  MSG_AUDIO_TIME_STAMP,  // int32
-  MSG_VAD                // int32
+  MSG_JPEG_PREVIEW,        // byte array
+  MSG_JPEG,                // byte array
+  MSG_POROTO,              // byte array
+  MSG_CTL_CAPTURE,         // no data
+  MSG_CTL_PREVIEW_DRIVER,  // no data
+  MSG_CTL_PREVIEW_FULL,    // no data
+  MSG_AUDIO,               // byte array
+  MSG_AUDIO_TIME_STAMP,    // int64
+  MSG_VAD,                 // int32
+  MSG_LIP_COMMAND          // byte array
 };
 struct DataTransferInputMsg {
   MsgType type;
@@ -59,7 +62,7 @@ class HobotDataTransfer {
   ~HobotDataTransfer() {}
   int Init(const char *ip, SericeType type);
   int Send(TransferVector &msgs);
-  int Send(MsgType type, void *data, int datalen);
+  int Send(MsgType type, void *data = nullptr, int datalen = 0);
   void SetReceiveCallback(TransferCallBack func);
   void StartReceive();
   void Finish();

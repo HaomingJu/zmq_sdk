@@ -14,7 +14,9 @@ void HobotProtocolWrite::WriteHead(int32_t version, int64_t stamp,
 void HobotProtocolWrite::WriteTLV(int type, int32_t length, int8_t *value) {
   memcpy(m_buff_ + pos_, &type, 4);
   memcpy(m_buff_ + pos_ + 4, &length, 4);
-  memcpy(m_buff_ + pos_ + 8, value, length);
+  if (value) {
+    memcpy(m_buff_ + pos_ + 8, value, length);
+  }
   pos_ = pos_ + 8 + length;
   memcpy(m_buff_, &pos_, 4);
 }

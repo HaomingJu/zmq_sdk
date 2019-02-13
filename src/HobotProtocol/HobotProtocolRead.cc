@@ -74,12 +74,18 @@ int HobotProtocolRead::ReadTLV(int &type, int32_t &length, int8_t **value) {
   }
   memcpy(&type, m_buff_ + pos_, 4);
   memcpy(&length, m_buff_ + pos_ + 4, 4);
-  *value = m_buff_ + pos_ + 8;
-  pos_ = pos_ + 8 + length;
+
   if (IsEdianDiff_) {
     Swap32(type);
     Swap32(length);
   }
+  if (length > 0) {
+    *value = m_buff_ + pos_ + 8;
+  } else {
+    *value = nullptr;
+  }
+
+  pos_ = pos_ + 8 + length;
   return 0;
 }
 }

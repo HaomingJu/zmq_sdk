@@ -16,8 +16,8 @@ FORWARD_DEFINE(DispatchModule, 0) {
   DoForward(input, workflow, context, "DispatchModule");
 }
 void DispatchModule::SwapData(struct DataTransferInputMsg &msg) {
-  if (msg.type == MSG_AUDIO_TIME_STAMP || msg.type == MSG_VAD) {
-    HobotProtocolRead::Swap32(*(int32_t *)msg.data);
+  if (msg.type == MSG_AUDIO_TIME_STAMP) {
+    HobotProtocolRead::Swap64(*(int64_t *)msg.data);
   }
 }
 void DispatchModule::DoForward(const hobot::MessageLists &input,
