@@ -25,6 +25,9 @@ class RunObserver;
 class Module;
 }
 namespace Modo {
+/*
+ * Message type
+ */
 enum MsgType {
   MSG_JPEG_PREVIEW,        // byte array
   MSG_JPEG,                // byte array
@@ -37,18 +40,32 @@ enum MsgType {
   MSG_VAD,                 // int32
   MSG_LIP_COMMAND          // byte array
 };
+
+/*
+ * DataTransferInputMsg
+ */
 struct DataTransferInputMsg {
   MsgType type;
   void *data;
   int datalen;
 };
+
 class SendModule;
 class ReceiveModule;
 class DispatchModule;
 typedef std::vector<DataTransferInputMsg> TransferVector;
 typedef std::function<int(TransferVector &)> TransferCallBack;
+
+/*
+ * service type
+ */
 enum SericeType { TRANSFER_SEVER, TRANSFER_CLINET };
+
 class HobotNetworkBase;
+
+/*
+ * Data Transfer Class
+ */
 class HobotDataTransfer {
  public:
   HobotDataTransfer()
@@ -60,11 +77,51 @@ class HobotDataTransfer {
         observer_(nullptr) {}
 
   ~HobotDataTransfer() {}
+  /****************************************************************************
+   * info   : init
+   * param  : ip : tcp://192.168.1.20:5555,It is Server Ip.
+   *          type : SericeType
+   * return : 0 success 1 fail
+   ***************************************************************************/
   int Init(const char *ip, SericeType type);
+
+  /****************************************************************************
+   * info   : Send
+   * param  : msgs : TransferVector
+   * return : 0 success 1 fail
+   ***************************************************************************/
   int Send(TransferVector &msgs);
+
+  /****************************************************************************
+   * info   : Send
+   * param  : type : MsgType
+   *          data : data ptr
+   *          datalen: data length
+   * return : 0 success 1 fail
+   ***************************************************************************/
   int Send(MsgType type, void *data = nullptr, int datalen = 0);
+
+  /****************************************************************************
+   * info   : SetReceiveCallback ,will be call when receive data
+   * param  : func : TransferCallBack
+   *          data : data ptr
+   *          datalen: data length
+   * return : 0 success 1 fail
+   ***************************************************************************/
   void SetReceiveCallback(TransferCallBack func);
+
+  /****************************************************************************
+   * info   : StartReceive thread
+   * param  :
+   * return :
+   ***************************************************************************/
   void StartReceive();
+
+  /****************************************************************************
+   * info   : Finish
+   * param  :
+   * return :
+   ***************************************************************************/
   void Finish();
 
  protected:
