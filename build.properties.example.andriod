@@ -39,6 +39,6 @@ username   deploy-alpha
 password   deploy-alpha@hobot.cc
 
 # install artifact
-install_artifact    com.hobot.native.example::1.0.0:zip
+install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.4:zip
 
 

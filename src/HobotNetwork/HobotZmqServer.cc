@@ -16,7 +16,6 @@
 #include "hobotlog/hobotlog.hpp"
 namespace Modo {
 int HobotZmqServer::Init(const char *config) {
-  SetLogLevel(HOBOT_LOG_DEBUG);
   LOGD << "config= " << config;
   if (!config) {
     LOGD << "config null ";

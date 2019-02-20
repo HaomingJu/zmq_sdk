@@ -14,7 +14,6 @@
 
 namespace Modo {
 int HobotZmqClient::Init(const char *config) {
-  SetLogLevel(HOBOT_LOG_DEBUG);
   if (!config) {
     LOGE << "config null ";
     printf("1\n");
@@ -54,7 +53,6 @@ int HobotZmqClient::Init(const char *config) {
 }
 
 int HobotZmqClient::RecvData(void *buff, size_t bufflen) {
-  SetLogLevel(HOBOT_LOG_DEBUG);
   int recv_size = 0;
   if (buff != nullptr) {
     recv_size = zmq_recv(m_requester, buff, bufflen, 0);

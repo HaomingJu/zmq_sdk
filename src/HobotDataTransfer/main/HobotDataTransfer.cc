@@ -82,7 +82,6 @@ void HobotDataTransfer::ExecuteOnThread() {
   }
 }
 int HobotDataTransfer::Init(const char *ip, SericeType type) {
-  SetLogLevel(HOBOT_LOG_DEBUG);
   int ret = InitNetWork(ip, type);
   if (ret) {
     LOGE << "InitNetWork  failed !";
@@ -114,7 +113,6 @@ int HobotDataTransfer::InitNetWork(const char *ip, SericeType type) {
 }
 typedef std::vector<std::pair<hobot::Module *, int>> ObserverBinding;
 int HobotDataTransfer::InitWorkflow() {
-  SetLogLevel(HOBOT_LOG_DEBUG);
   LOGD << "HobotDataTransfer::Init!";
   if (inited_) {
     return 0;
