@@ -23,11 +23,11 @@ class MutiRunObserver : public hobot::RunObserver {
 
   void OnResult(hobot::Module *from, int forward_index,
                 hobot::spMessage output) {
-    printf("onResult\n");
+    // printf("onResult\n");
   }
   void OnError(hobot::Module *from, int forward_index,
                hobot::spMessage output) {
-    printf("onError\n");
+    // printf("onError\n");
   }
 };
 
