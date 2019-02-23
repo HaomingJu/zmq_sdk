@@ -15,7 +15,8 @@ namespace Modo {
 class HobotNetworkBase;
 class SendModule : public hobot::Module {
  public:
-  SendModule(std::string class_name) : hobot::Module("Modo", class_name) {}
+  SendModule(std::string class_name)
+      : hobot::Module("Modo", class_name), initd_(false) {}
   virtual ~SendModule() {}
 
   int Init(hobot::RunContext *context);
@@ -33,6 +34,7 @@ class SendModule : public hobot::Module {
 
  private:
   HobotNetworkBase *sender_;
+  int initd_;
 };
 }
 

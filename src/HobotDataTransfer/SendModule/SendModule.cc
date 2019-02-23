@@ -42,6 +42,9 @@ void SendModule::DoForward(const hobot::MessageLists &input,
   workflow->Return(this, 0, hobot::spMessage(), context);
 }
 int SendModule::Init(hobot::RunContext *context) {
+  if (initd_)
+    return 0;
+  initd_ = true;
   LOGD << "Init";
   return 0;
 }

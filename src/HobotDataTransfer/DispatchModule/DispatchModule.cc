@@ -69,6 +69,9 @@ void DispatchModule::DoForward(const hobot::MessageLists &input,
   workflow->Return(this, 0, hobot::spMessage(), context);
 }
 int DispatchModule::Init(hobot::RunContext *context) {
+  if (inited_)
+    return 0;
+  inited_ = true;
   LOGD << "Init";
   ReceiveBuffMsgPool::Create(5, 10);
   return 0;

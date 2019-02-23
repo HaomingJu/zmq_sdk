@@ -15,7 +15,8 @@ namespace Modo {
 class HobotNetworkBase;
 class DispatchModule : public hobot::Module {
  public:
-  DispatchModule(std::string class_name) : hobot::Module("Modo", class_name) {}
+  DispatchModule(std::string class_name)
+      : hobot::Module("Modo", class_name), inited_(false) {}
   virtual ~DispatchModule() {}
 
   int Init(hobot::RunContext *context);
@@ -34,6 +35,7 @@ class DispatchModule : public hobot::Module {
 
  private:
   TransferCallBack user_callback_;
+  bool inited_;
 };
 }
 

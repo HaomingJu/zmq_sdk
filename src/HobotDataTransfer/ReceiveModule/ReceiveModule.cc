@@ -40,6 +40,9 @@ void ReceiveModule::DoForward(const hobot::MessageLists &input,
   workflow->Reschedule(this, 0, input, context, 0);
 }
 int ReceiveModule::Init(hobot::RunContext *context) {
+  if (initd_)
+    return 0;
+  initd_ = true;
   LOGD << "Init";
   ReceiveBuffMsgPool::Create(10, 50);
   return 0;

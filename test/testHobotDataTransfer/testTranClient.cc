@@ -44,10 +44,10 @@ int main(int argc, char **argv) {
   transfer.StartReceive();
   int i = 0;
   while (1) {
-    char data[128] = {0};
-    sprintf(data, "client%d", i);
-    printf("Send :%s\n", data);
-    transfer.Send(Modo::MSG_JPEG, data, strlen(data));
+    //    char data[128] = {0};
+    //    sprintf(data, "client%d", i);
+    //    printf("Send :%s\n", data);
+    //    transfer.Send(Modo::MSG_JPEG, data, strlen(data));
     sleep(1);
     i++;
   }
