@@ -157,7 +157,7 @@ int HobotDataTransfer::InitWorkflow() {
 
   ReceiveModule *receive = new ReceiveModule("ReceiveModule");
   if (!receive) {
-    LOGE << "ReceiveModule new failed !";
+    LOGD << "ReceiveModule new failed !";
     return 1;
   }
   receive->SetReceiver(network_);
@@ -203,7 +203,7 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
 
   if (!sp_send_msg) {
-    LOGE << "new  SendMsg failed";
+    LOGD << "new  SendMsg failed";
     return 1;
   }
 
@@ -228,7 +228,7 @@ int HobotDataTransfer::Send(MsgType type, void *data, int datalen) {
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
 
   if (!sp_send_msg) {
-    LOGE << "new  SendMsg failed";
+    LOGD << "new  SendMsg failed";
     return 1;
   }
 

@@ -34,7 +34,7 @@ void ReceiveModule::DoForward(const hobot::MessageLists &input,
       workflow->Return(this, 0, sp_receive_msg, context);
     }
   } else {
-    LOGE << "sp_receive_msg new failed!";
+    LOGD << "sp_receive_msg new failed!";
   }
   // Reschedule time modify 1ms
   workflow->Reschedule(this, 0, input, context, 0);

@@ -27,7 +27,7 @@ void DispatchModule::DoForward(const hobot::MessageLists &input,
   LOGD << "DispatchModule::DoForward";
   hobot::MessageList *msg_in = input[0];
   if (!msg_in) {
-    LOGE << "slot msg is null ";
+    LOGD << "slot msg is null ";
     return;
   }
 
