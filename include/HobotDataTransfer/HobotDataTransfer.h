@@ -28,24 +28,25 @@ namespace Modo {
 /*
  * Message type
  */
-enum MsgType {
-  MSG_JPEG_PREVIEW,        // byte array
-  MSG_JPEG,                // byte array
-  MSG_POROTO,              // byte array
-  MSG_CTL_CAPTURE,         // no data
-  MSG_CTL_PREVIEW_DRIVER,  // no data
-  MSG_CTL_PREVIEW_FULL,    // no data
-  MSG_AUDIO,               // byte array
-  MSG_AUDIO_TIME_STAMP,    // int64
-  MSG_VAD,                 // int32
-  MSG_LIP_COMMAND          // byte array
-};
+
+// enum MsgType {
+//   MSG_JPEG_PREVIEW,        // byte array
+//   MSG_JPEG,                // byte array
+//   MSG_POROTO,              // byte array
+//   MSG_CTL_CAPTURE,         // no data
+//   MSG_CTL_PREVIEW_DRIVER,  // no data
+//   MSG_CTL_PREVIEW_FULL,    // no data
+//   MSG_AUDIO,               // byte array
+//   MSG_AUDIO_TIME_STAMP,    // int64
+//   MSG_VAD,                 // int32
+//   MSG_LIP_COMMAND          // byte array
+// };
 
 /*
  * DataTransferInputMsg
  */
 struct DataTransferInputMsg {
-  MsgType type;
+  int  type;
   void *data;
   int datalen;
 };
@@ -94,12 +95,12 @@ class HobotDataTransfer {
 
   /****************************************************************************
    * info   : Send
-   * param  : type : MsgType
+   * param  : type : int 
    *          data : data ptr
    *          datalen: data length
    * return : 0 success 1 fail
    ***************************************************************************/
-  int Send(MsgType type, void *data = nullptr, int datalen = 0);
+  int Send(int  type, void *data = nullptr, int datalen = 0);
 
   /****************************************************************************
    * info   : SetReceiveCallback ,will be call when receive data
@@ -118,11 +119,23 @@ class HobotDataTransfer {
   void StartReceive();
 
   /****************************************************************************
+   * info   : Asynchronous Receive
+   * param  : msgvec : msgs will recv
+   * return :
+   ***************************************************************************/
+  void AsynchReceive(TransferVector &msgvec);
+
+  /****************************************************************************
    * info   : Finish
    * param  :
    * return :
    ***************************************************************************/
   void Finish();
+
+  bool GetIsEdianDiff_ () { return IsEdianDiff_; }
+  void Swap16(int16_t &value);
+  void Swap32(int32_t &value);
+  void Swap64(int64_t &value);
 
  protected:
   int InitWorkflow();
@@ -130,6 +143,7 @@ class HobotDataTransfer {
   void ExecuteOnThread();
 
  private:
+  bool IsEdianDiff_;
   bool inited_;
   HobotNetworkBase *network_;
   SendModule *send_;

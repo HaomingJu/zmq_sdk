@@ -8,13 +8,16 @@
 #include "HobotDataTransfer/HobotDataTransfer.h"
 #include <hobot/hobot.h>
 #include <unistd.h>
+#include <memory.h>
 #include "DispatchModule/DispatchModule.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
 #include "HobotProtocol/HobotProtocolWrite.h"
+#include "HobotProtocol/HobotProtocolRead.h"
 #include "ReceiveModule/ReceiveModule.h"
 #include "SendModule/SendModule.h"
 #include "hobotlog/hobotlog.hpp"
 #include "message/BuffMsg.h"
+
 namespace Modo {
 class MutiRunObserver : public hobot::RunObserver {
  public:
@@ -222,7 +225,7 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
   workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   return 0;
 }
-int HobotDataTransfer::Send(MsgType type, void *data, int datalen) {
+int HobotDataTransfer::Send(int type, void *data, int datalen) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
 
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
@@ -250,5 +253,60 @@ int HobotDataTransfer::Send(MsgType type, void *data, int datalen) {
 }
 void HobotDataTransfer::SetReceiveCallback(TransferCallBack func) {
   dispatch_->SetReceiveCallback(func);
+}
+
+void HobotDataTransfer::AsynchReceive(TransferVector &msgvec) {
+
+  int8_t *buff_rec = new int8_t[1024 * 1024];
+  int bufflen_rec = 1024 * 1024;
+  LOGD << "do RecvData begin";
+  int ret = network_->RecvData(buff_rec, bufflen_rec);
+  LOGD << "do RecvData end,ret = " << ret;
+
+  HobotProtocolRead reader(buff_rec, bufflen_rec);
+
+  IsEdianDiff_ = false;
+
+  int32_t version = 0;
+  memcpy(&version, buff_rec + 4, 4);
+  if ((uint32_t)version > 0x0000FFFFu) {
+    IsEdianDiff_ = true;
+  }
+
+  while (true) {
+    struct DataTransferInputMsg msg;
+    int type_rec;
+    int8_t *data_rec;
+    int datalen_rec;
+    int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
+    if (ret)
+      break;
+    msg.type = type_rec;
+    msg.data = data_rec;
+    msg.datalen = datalen_rec;
+    LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
+         << (char *)msg.data << "]";
+    msgvec.push_back(msg);
+  }
+}
+
+void HobotDataTransfer::Swap16(int16_t &value) {
+  value = ((value & 0x00FF) << 8) | ((value & 0xFF00) >> 8);
+} 
+
+void HobotDataTransfer::Swap32(int32_t &value) {
+  value = ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8) |
+          ((value & 0x00FF0000) >> 8) | ((value & 0xFF000000) >> 24);
+}
+
+void HobotDataTransfer::Swap64(int64_t &value) {
+  value = ((value & 0x00000000000000FF) << 56) |
+          ((value & 0x000000000000FF00) << 40) |
+          ((value & 0x0000000000FF0000) << 24) |
+          ((value & 0x00000000FF000000) << 8) |
+          ((value & 0x000000FF00000000) >> 8) |
+          ((value & 0x0000FF0000000000) >> 24) |
+          ((value & 0x00FF000000000000) >> 40) |
+          ((value & 0xFF00000000000000) >> 56);
 }
 }
