@@ -5,7 +5,7 @@ file(GLOB CPP_FILES *.cc)
 include_directories(
     ${zmq_sdk_INCLUDE_DIRS})
 
-add_executable(testMatrixServer testMatrixServer.cc)
+add_executable(testMatrixServer testMatrixServer.cc )
 
 
 target_link_libraries(testMatrixServer
@@ -16,7 +16,7 @@ install (TARGETS testMatrixServer
 
 
 if(${_PLATFORM} STREQUAL "linux" AND ${_ARCHITECTURE} STREQUAL "x86")
-	add_executable(testPcClient testPcClient.cc)
+	add_executable(testPcClient testPcClient.cc time_sync/time_sync.cpp)
 
 	target_link_libraries(testPcClient
 	    HobotDataTransfer

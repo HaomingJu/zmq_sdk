@@ -19,8 +19,8 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include "hobotSpeechAPI.h"
-
+#include "LinuxHisfSDK/hobotSpeechAPI.h"
+#include "time_sync/time_sync.h"
 //主机序转网络序
 unsigned long long htonll(unsigned long long val) {
   if (__BYTE_ORDER == __LITTLE_ENDIAN) {
@@ -82,7 +82,13 @@ void audio_cb(AudioInfo *audio_data) {
 
   // free(audio_);
 }
-
+int sync_time() {
+  Modo::TimeUtils::ClientSyncTime("192.168.1.10", 5);
+  int64_t stamp = Modo::TimeUtils::GetEpochTimeMs();
+  std::cout << "GetEpochTimeMs, stamp = " << stamp << std::endl;
+  hobot::speech::SetTimeStamp(stamp);
+  return 0;
+}
 int main(int argc, char **argv) {
   std::string ip;
   std::string port;
@@ -101,20 +107,23 @@ int main(int argc, char **argv) {
     printf("transfer int failed:%s\n", ipstr.c_str());
     return 1;
   }
-
-  ret = hobot::speech::Init("hw:1,0");
+  SpeechConfig config;
+  config.audio_cb = audio_cb;
+  config.save_file_enable = true;
+  ret = hobot::speech::Init(config);
   if (ret != 0) {
     std::cout << "Audio Init Failed, ret = " << ret << std::endl;
     return 0;
   }
-  hobot::speech::SetAudioCallback(audio_cb);
-
+  sync_time();
   ret = hobot::speech::Start();
   if (ret != 0) {
     std::cout << "Start Failed, ret = " << ret << std::endl;
   }
+  std::cout << "do, stamp = " << std::endl;
   while (1) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    sync_time();
+    sleep(10);
   }
   g_transfer.Finish();
   hobot::speech::Finish();
