@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
   }
   SpeechConfig config;
   config.audio_cb = audio_cb;
-  config.save_file_enable = true;
+  config.save_file_enable = false;
   ret = hobot::speech::Init(config);
   if (ret != 0) {
     std::cout << "Audio Init Failed, ret = " << ret << std::endl;
