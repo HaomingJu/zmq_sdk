@@ -255,7 +255,7 @@ void HobotDataTransfer::SetReceiveCallback(TransferCallBack func) {
   dispatch_->SetReceiveCallback(func);
 }
 
-void HobotDataTransfer::AsynchReceive(TransferVector &msgvec) {
+void HobotDataTransfer::SynchReceive(TransferVector &msgvec) {
 
   int8_t *buff_rec = new int8_t[1024 * 1024];
   int bufflen_rec = 1024 * 1024;

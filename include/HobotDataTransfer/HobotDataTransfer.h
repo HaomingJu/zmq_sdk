@@ -119,11 +119,11 @@ class HobotDataTransfer {
   void StartReceive();
 
   /****************************************************************************
-   * info   : Asynchronous Receive
+   * info   : Synchronous Receive
    * param  : msgvec : msgs will recv
    * return :
    ***************************************************************************/
-  void AsynchReceive(TransferVector &msgvec);
+  void SynchReceive(TransferVector &msgvec);
 
   /****************************************************************************
    * info   : Finish
@@ -132,10 +132,13 @@ class HobotDataTransfer {
    ***************************************************************************/
   void Finish();
 
-  bool GetIsEdianDiff_ () { return IsEdianDiff_; }
-  void Swap16(int16_t &value);
-  void Swap32(int32_t &value);
-  void Swap64(int64_t &value);
+  bool GetIsEdianDiff() { return IsEdianDiff_; }
+
+  static void Swap16(int16_t &value);
+  
+  static void Swap32(int32_t &value);
+  
+  static void Swap64(int64_t &value);
 
  protected:
   int InitWorkflow();
