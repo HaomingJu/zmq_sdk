@@ -54,9 +54,10 @@ struct DataTransferInputMsg {
 class SendModule;
 class ReceiveModule;
 class DispatchModule;
+class SendMsg;
 typedef std::vector<DataTransferInputMsg> TransferVector;
 typedef std::function<int(TransferVector &)> TransferCallBack;
-
+typedef std::shared_ptr<SendMsg> spSendMsg;
 /*
  * service type
  */
@@ -144,6 +145,8 @@ class HobotDataTransfer {
   int InitWorkflow();
   int InitNetWork(const char *ip, SericeType type);
   void ExecuteOnThread();
+  int DoSend(spSendMsg sp_send_msg);
+
  private:
   bool IsEdianDiff_;
   bool inited_;
