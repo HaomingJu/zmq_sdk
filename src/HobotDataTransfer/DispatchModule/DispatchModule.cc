@@ -73,7 +73,7 @@ int DispatchModule::Init(hobot::RunContext *context) {
     return 0;
   inited_ = true;
   LOGD << "Init";
-  ReceiveBuffMsgPool::Create(5, 10);
+  // ReceiveBuffMsgPool::Create(5, 10);
   return 0;
 }
 void DispatchModule::Reset() {

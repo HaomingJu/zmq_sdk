@@ -123,7 +123,7 @@ class HobotDataTransfer {
    * param  : msgvec : msgs will recv
    * return :
    ***************************************************************************/
-  void SynchReceive(TransferVector &msgvec);
+  int SynchReceive(TransferVector &msgvec);
 
   /****************************************************************************
    * info   : Finish

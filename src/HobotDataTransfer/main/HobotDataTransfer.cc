@@ -96,6 +96,7 @@ int HobotDataTransfer::Init(const char *ip, SericeType type) {
     LOGE << "InitWorkflowInitWorkflow  failed !";
     return ret;
   }
+  ReceiveBuffMsgPool::Create(10, 50);
   return 0;
 }
 
@@ -255,38 +256,45 @@ void HobotDataTransfer::SetReceiveCallback(TransferCallBack func) {
   dispatch_->SetReceiveCallback(func);
 }
 
-void HobotDataTransfer::SynchReceive(TransferVector &msgvec) {
+int HobotDataTransfer::SynchReceive(TransferVector &msgvec) {
+  spReceiveMsg sp_receive_msg = ReceiveBuffMsgPool::GetSharedPtrEx(true);
+  if (sp_receive_msg) {
+    void *data = sp_receive_msg->GetBuff();
+    int datalen = sp_receive_msg->GetBuffSize();
+    LOGD << "do RecvData begin";
+    int ret = network_->RecvData(data, datalen);
+    LOGD << "do RecvData end,ret = " << ret;
 
-  int8_t *buff_rec = new int8_t[1024 * 1024];
-  int bufflen_rec = 1024 * 1024;
-  LOGD << "do RecvData begin";
-  int ret = network_->RecvData(buff_rec, bufflen_rec);
-  LOGD << "do RecvData end,ret = " << ret;
+    if (ret > 0) {
+      HobotProtocolRead reader((int8_t *)data, datalen);
+      IsEdianDiff_ = false;
+      int32_t version = 0;
+      memcpy(&version, data + 4, 4);
+      if ((uint32_t)version > 0x0000FFFFu) {
+        IsEdianDiff_ = true;
+      }
 
-  HobotProtocolRead reader(buff_rec, bufflen_rec);
-
-  IsEdianDiff_ = false;
-
-  int32_t version = 0;
-  memcpy(&version, buff_rec + 4, 4);
-  if ((uint32_t)version > 0x0000FFFFu) {
-    IsEdianDiff_ = true;
-  }
-
-  while (true) {
-    struct DataTransferInputMsg msg;
-    int type_rec;
-    int8_t *data_rec;
-    int datalen_rec;
-    int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
-    if (ret)
-      break;
-    msg.type = type_rec;
-    msg.data = data_rec;
-    msg.datalen = datalen_rec;
-    LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
-         << (char *)msg.data << "]";
-    msgvec.push_back(msg);
+      while (true) {
+        struct DataTransferInputMsg msg;
+        int type_rec;
+        int8_t *data_rec;
+        int datalen_rec;
+        int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
+        if (ret)
+          break;
+        msg.type = type_rec;
+        msg.data = data_rec;
+        msg.datalen = datalen_rec;
+        LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
+             << (char *)msg.data << "]";
+        msgvec.push_back(msg);
+      }
+      return 0;
+    } else {
+      return -1;
+    }
+  } else {
+    return -1;
   }
 }
 

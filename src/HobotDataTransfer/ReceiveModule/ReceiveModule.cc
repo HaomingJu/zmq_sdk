@@ -44,7 +44,7 @@ int ReceiveModule::Init(hobot::RunContext *context) {
     return 0;
   initd_ = true;
   LOGD << "Init";
-  ReceiveBuffMsgPool::Create(10, 50);
+  //ReceiveBuffMsgPool::Create(10, 50);
   return 0;
 }
 void ReceiveModule::Reset() {
