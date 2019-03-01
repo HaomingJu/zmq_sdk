@@ -85,7 +85,7 @@ void HobotDataTransfer::ExecuteOnThread() {
   }
 }
 int HobotDataTransfer::Init(const char *ip, SericeType type) {
-  // SetLogLevel(HOBOT_LOG_DEBUG);
+  //SetLogLevel(HOBOT_LOG_DEBUG);
   int ret = InitNetWork(ip, type);
   if (ret) {
     LOGE << "InitNetWork  failed !";
@@ -223,7 +223,10 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
   }
   sp_send_msg->SetDataSize(writer.GetPackageLength());
   LOGD << "HobotDataTransfer::Send length=" << writer.GetPackageLength();
-  workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
+  void *data = sp_send_msg->GetBuff();
+  int datalen = sp_send_msg->GetDataSize();
+  network_->SendData(data, datalen);
+  // workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   return 0;
 }
 int HobotDataTransfer::Send(int type, void *data, int datalen) {
