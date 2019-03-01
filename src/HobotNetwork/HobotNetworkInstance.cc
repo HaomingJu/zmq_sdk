@@ -41,6 +41,7 @@ HobotNetworkBase *HobotNetworkInstance::CreateServerInstance(
 
 void HobotNetworkInstance::DestroyNetworkInstance(
     HobotNetworkBase *net_instance) {
+  net_instance->Finish();
   delete net_instance;
 }
 }

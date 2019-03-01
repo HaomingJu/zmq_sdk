@@ -70,7 +70,13 @@ void HobotDataTransfer::Finish() {
   if (engine_)
     delete engine_;
   engine_ = NULL;
-  delete network_;
+  
+  if (network_) {
+    HobotNetworkInstance ins;
+    ins.DestroyNetworkInstance(network_);
+  }
+  network_ = NULL;
+  
   inited_ = false;
 }
 void HobotDataTransfer::ExecuteOnThread() {
