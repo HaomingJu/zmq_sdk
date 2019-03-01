@@ -7,12 +7,12 @@
 
 #include "HobotDataTransfer/HobotDataTransfer.h"
 #include <hobot/hobot.h>
-#include <unistd.h>
 #include <memory.h>
+#include <unistd.h>
 #include "DispatchModule/DispatchModule.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
-#include "HobotProtocol/HobotProtocolWrite.h"
 #include "HobotProtocol/HobotProtocolRead.h"
+#include "HobotProtocol/HobotProtocolWrite.h"
 #include "ReceiveModule/ReceiveModule.h"
 #include "SendModule/SendModule.h"
 #include "hobotlog/hobotlog.hpp"
@@ -300,7 +300,7 @@ int HobotDataTransfer::SynchReceive(TransferVector &msgvec) {
 
 void HobotDataTransfer::Swap16(int16_t &value) {
   value = ((value & 0x00FF) << 8) | ((value & 0xFF00) >> 8);
-} 
+}
 
 void HobotDataTransfer::Swap32(int32_t &value) {
   value = ((value & 0x000000FF) << 24) | ((value & 0x0000FF00) << 8) |
