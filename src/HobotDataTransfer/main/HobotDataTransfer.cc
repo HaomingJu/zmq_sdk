@@ -223,11 +223,9 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
   }
   sp_send_msg->SetDataSize(writer.GetPackageLength());
   LOGD << "HobotDataTransfer::Send length=" << writer.GetPackageLength();
-  void *data = sp_send_msg->GetBuff();
-  int datalen = sp_send_msg->GetDataSize();
-  network_->SendData(data, datalen);
+  return network_->SendData(buff, writer.GetPackageLength());
   // workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
-  return 0;
+  //return 0;
 }
 int HobotDataTransfer::Send(int type, void *data, int datalen) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
@@ -252,8 +250,9 @@ int HobotDataTransfer::Send(int type, void *data, int datalen) {
   writer.WriteTLV(type, datalen, (int8_t *)data);
   LOGD << "HobotDataTransfer::length=" << writer.GetPackageLength();
   sp_send_msg->SetDataSize(writer.GetPackageLength());
-  workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
-  return 0;
+  return network_->SendData(buff, writer.GetPackageLength());
+  //workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
+  //return 0;
 }
 void HobotDataTransfer::SetReceiveCallback(TransferCallBack func) {
   dispatch_->SetReceiveCallback(func);

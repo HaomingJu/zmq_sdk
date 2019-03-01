@@ -144,7 +144,6 @@ class HobotDataTransfer {
   int InitWorkflow();
   int InitNetWork(const char *ip, SericeType type);
   void ExecuteOnThread();
-
  private:
   bool IsEdianDiff_;
   bool inited_;
