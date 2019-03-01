@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
   while (1) {
     send(&info);
     // sync_time();
-    usleep(1600);
+    usleep(10);
   }
   g_transfer.Finish();
   hobot::speech::Finish();

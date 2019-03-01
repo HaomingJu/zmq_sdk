@@ -200,7 +200,7 @@ int HobotDataTransfer::InitWorkflow() {
   workflow_main_rt_ctx_->Init();
 
 
-  SendBuffMsgPool::Create(10, 20);
+  SendBuffMsgPool::Create(1, 2);
   return 0;
 }
 void HobotDataTransfer::StartReceive() {
