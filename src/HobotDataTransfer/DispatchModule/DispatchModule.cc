@@ -58,9 +58,9 @@ void DispatchModule::DoForward(const hobot::MessageLists &input,
     msg.datalen = datalen_rec;
     LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
          << (char *)msg.data << "]";
-    if (reader.GetIsEdianDiff()) {
-      SwapData(msg);
-    }
+    //    if (reader.GetIsEdianDiff()) {
+    //      SwapData(msg);
+    //    }
     msgvec.push_back(msg);
   }
   if (user_callback_) {

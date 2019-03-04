@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <string>
 #include <iostream>
+#include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
 
 int main(int argc, char **argv) {
@@ -33,11 +33,17 @@ int main(int argc, char **argv) {
     return 1;
   }
   std::cout << "I am here" << std::endl;
-  Modo::TransferVector vec;
-  transfer.SynchReceive(vec);
-  for(auto msg : vec) {
-    printf("client_sync_recv[%d,%d,%s] \n", msg.type, msg.datalen, (char *)msg.data);
-  } 
+
+  while (true) {
+    Modo::TransferVector vec;
+    transfer.Receive(vec);
+    for (auto msg : vec) {
+      printf("client_sync_recv[%d,%d,%s] \n", msg.type, msg.datalen,
+             (char *)msg.data);
+    }
+    vec.clear();
+  }
+
   // int i = 0;
   // while (1) {
   //   char data[128] = {0};

@@ -59,7 +59,7 @@ void audio_cb(AudioInfo *audio_data) {
   char buff[2048];
   {
     Modo::DataTransferInputMsg msg;
-    msg.type = Modo::MSG_AUDIO_TIME_STAMP;
+    msg.type = 7;
     msg.data = (int8_t *)&audio_data->timestamp;
     msg.datalen = 8;
     tans_vector.push_back(msg);
@@ -67,7 +67,7 @@ void audio_cb(AudioInfo *audio_data) {
 
   {
     Modo::DataTransferInputMsg msg1;
-    msg1.type = Modo::MSG_AUDIO;
+    msg1.type = 6;
     sprintf(buff, "hello_%d", g_i++);
     msg1.data = (int8_t *)audio_data->audio_channel;
     ;

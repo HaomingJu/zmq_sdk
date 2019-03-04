@@ -18,7 +18,7 @@ int server_call(Modo::TransferVector &tran_vector) {
   for (int i = 0; i < size; i++) {
     Modo::DataTransferInputMsg msg = tran_vector[i];
     printf("server_call[%d,%d,%s] \n", msg.type, msg.datalen, msg.data);
-    if (msg.type == Modo::MSG_AUDIO) {
+    if (msg.type == 6) {
       fwrite(msg.data, msg.datalen, 1, g_fp);
     }
   }

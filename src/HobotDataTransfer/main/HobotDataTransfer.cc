@@ -270,7 +270,7 @@ void HobotDataTransfer::SetReceiveCallback(TransferCallBack func) {
   dispatch_->SetReceiveCallback(func);
 }
 
-int HobotDataTransfer::SynchReceive(TransferVector &msgvec) {
+int HobotDataTransfer::Receive(TransferVector &msgvec) {
   spReceiveMsg sp_receive_msg = ReceiveBuffMsgPool::GetSharedPtrEx(true);
   if (sp_receive_msg) {
     void *data = sp_receive_msg->GetBuff();

@@ -46,7 +46,7 @@ namespace Modo {
  * DataTransferInputMsg
  */
 struct DataTransferInputMsg {
-  int  type;
+  int type;
   void *data;
   int datalen;
 };
@@ -96,12 +96,12 @@ class HobotDataTransfer {
 
   /****************************************************************************
    * info   : Send
-   * param  : type : int 
+   * param  : type : int
    *          data : data ptr
    *          datalen: data length
    * return : 0 success 1 fail
    ***************************************************************************/
-  int Send(int  type, void *data = nullptr, int datalen = 0);
+  int Send(int type, void *data = nullptr, int datalen = 0);
 
   /****************************************************************************
    * info   : SetReceiveCallback ,will be call when receive data
@@ -124,7 +124,7 @@ class HobotDataTransfer {
    * param  : msgvec : msgs will recv
    * return :
    ***************************************************************************/
-  int SynchReceive(TransferVector &msgvec);
+  int Receive(TransferVector &msgvec);
 
   /****************************************************************************
    * info   : Finish
@@ -136,9 +136,9 @@ class HobotDataTransfer {
   bool GetIsEdianDiff() { return IsEdianDiff_; }
 
   static void Swap16(int16_t &value);
-  
+
   static void Swap32(int32_t &value);
-  
+
   static void Swap64(int64_t &value);
 
  protected:
