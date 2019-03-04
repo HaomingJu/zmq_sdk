@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     char data[128] = {0};
     sprintf(data, "server%d", i);
     printf("Send :%s\n", data);
-    transfer.Send(1, data, strlen(data));
+    transfer.Send(1, data, strlen(data), true);
     sleep(1);
     i++;
   }

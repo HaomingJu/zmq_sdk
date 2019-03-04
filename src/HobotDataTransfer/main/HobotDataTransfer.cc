@@ -91,7 +91,7 @@ void HobotDataTransfer::ExecuteOnThread() {
   }
 }
 int HobotDataTransfer::Init(const char *ip, SericeType type) {
-  //SetLogLevel(HOBOT_LOG_DEBUG);
+  // SetLogLevel(HOBOT_LOG_DEBUG);
   int ret = InitNetWork(ip, type);
   if (ret) {
     LOGE << "InitNetWork  failed !";
@@ -207,13 +207,17 @@ void HobotDataTransfer::StartReceive() {
   workflow_main_->Feed(workflow_main_rt_ctx_, trigger_receive_, 0,
                        hobot::spMessage());
 }
-int HobotDataTransfer::DoSend(spSendMsg sp_send_msg) {
-  void *data = sp_send_msg->GetBuff();
-  int datalen = sp_send_msg->GetDataSize();
-  network_->SendData(data, datalen);
+int HobotDataTransfer::DoSend(spSendMsg sp_send_msg, bool sync) {
+  if (sync == true) {
+    void *data = sp_send_msg->GetBuff();
+    int datalen = sp_send_msg->GetDataSize();
+    network_->SendData(data, datalen);
+  } else {
+    workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
+  }
   return 0;
 }
-int HobotDataTransfer::Send(TransferVector &msgs) {
+int HobotDataTransfer::Send(TransferVector &msgs, bool sync) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
 
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
@@ -235,11 +239,11 @@ int HobotDataTransfer::Send(TransferVector &msgs) {
   }
   sp_send_msg->SetDataSize(writer.GetPackageLength());
   LOGD << "HobotDataTransfer::Send length=" << writer.GetPackageLength();
-  return DoSend(sp_send_msg);
+  return DoSend(sp_send_msg, sync);
   // workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   // return 0;
 }
-int HobotDataTransfer::Send(int type, void *data, int datalen) {
+int HobotDataTransfer::Send(int type, void *data, int datalen, bool sync) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
 
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
@@ -262,7 +266,7 @@ int HobotDataTransfer::Send(int type, void *data, int datalen) {
   writer.WriteTLV(type, datalen, (int8_t *)data);
   LOGD << "HobotDataTransfer::length=" << writer.GetPackageLength();
   sp_send_msg->SetDataSize(writer.GetPackageLength());
-  return DoSend(sp_send_msg);
+  return DoSend(sp_send_msg, sync);
   // workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   // return 0;
 }

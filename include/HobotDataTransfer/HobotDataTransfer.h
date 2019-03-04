@@ -92,7 +92,7 @@ class HobotDataTransfer {
    * param  : msgs : TransferVector
    * return : 0 success 1 fail
    ***************************************************************************/
-  int Send(TransferVector &msgs);
+  int Send(TransferVector &msgs, bool sync = false);
 
   /****************************************************************************
    * info   : Send
@@ -101,7 +101,7 @@ class HobotDataTransfer {
    *          datalen: data length
    * return : 0 success 1 fail
    ***************************************************************************/
-  int Send(int type, void *data = nullptr, int datalen = 0);
+  int Send(int type, void *data = nullptr, int datalen = 0, bool sync = false);
 
   /****************************************************************************
    * info   : SetReceiveCallback ,will be call when receive data
@@ -145,7 +145,7 @@ class HobotDataTransfer {
   int InitWorkflow();
   int InitNetWork(const char *ip, SericeType type);
   void ExecuteOnThread();
-  int DoSend(spSendMsg sp_send_msg);
+  int DoSend(spSendMsg sp_send_msg, bool sync);
 
  private:
   bool IsEdianDiff_;
