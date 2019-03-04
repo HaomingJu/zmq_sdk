@@ -18,6 +18,7 @@ set(library_list
     utils
     HobotNetwork
     HobotProtocol
+    TimeSync
     ${LOG_LIB}
     )
 

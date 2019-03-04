@@ -16,7 +16,7 @@ install (TARGETS testMatrixServer
 
 
 if(${_PLATFORM} STREQUAL "linux" AND ${_ARCHITECTURE} STREQUAL "x86")
-	add_executable(testPcClient testPcClient.cc time_sync/time_sync.cpp)
+	add_executable(testPcClient testPcClient.cc)
 
 	target_link_libraries(testPcClient
 	    HobotDataTransfer

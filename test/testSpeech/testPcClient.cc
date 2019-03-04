@@ -19,8 +19,9 @@
 #include <string>
 #include <thread>
 #include <vector>
+
 #include "LinuxHisfSDK/hobotSpeechAPI.h"
-#include "time_sync/time_sync.h"
+#include "TimeSync/TimeSync.h"
 //主机序转网络序
 unsigned long long htonll(unsigned long long val) {
   if (__BYTE_ORDER == __LITTLE_ENDIAN) {
@@ -83,8 +84,8 @@ void audio_cb(AudioInfo *audio_data) {
   // free(audio_);
 }
 int sync_time() {
-  Modo::TimeUtils::ClientSyncTime("192.168.1.10", 5);
-  int64_t stamp = Modo::TimeUtils::GetEpochTimeMs();
+  Modo::TimeSync::ClientSyncTime("192.168.1.10", 5);
+  int64_t stamp = Modo::TimeSync::GetEpochTimeMs();
   std::cout << "GetEpochTimeMs, stamp = " << stamp << std::endl;
   hobot::speech::SetTimeStamp(stamp);
   return 0;

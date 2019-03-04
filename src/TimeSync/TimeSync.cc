@@ -15,15 +15,15 @@
 #endif
 #include <string.h>
 #include <time.h>
-#include "time_sync.h"
+#include "TimeSync/TimeSync.h"
 
-#define MODULE_TAG "time_utils"
+#define MODULE_TAG "TimeSync"
 namespace Modo {
 
-int64_t TimeUtils::start_epoch_time_ = 0L;
-int64_t TimeUtils::init_time_stamp_;
-int TimeUtils::multiple_ = 1;
-int TimeUtils::divider_ = 1;
+int64_t TimeSync::start_epoch_time_ = 0L;
+int64_t TimeSync::init_time_stamp_;
+int TimeSync::multiple_ = 1;
+int TimeSync::divider_ = 1;
 
 int64_t GetSysStamp() {
   std::chrono::milliseconds time =
@@ -34,46 +34,48 @@ int64_t GetSysStamp() {
   // LOGE_T(MODULE_TAG) << "HobotADAS::GetTimeStamp():" << stamp;
   return stamp;
 }
-void TimeUtils::Reset() {
+void TimeSync::Reset() {
   start_epoch_time_ = GetSysStamp();
   init_time_stamp_ = start_epoch_time_;
   multiple_ = 1;
   divider_ = 1;
 }
 
-void TimeUtils::SetTimeZone(const char *tz) { putenv(const_cast<char *>(tz)); }
+void TimeSync::SetTimeZone(const char *tz) { putenv(const_cast<char *>(tz)); }
 
-void TimeUtils::InitTimeUtil(TimeStamp curEpochTime, int multiple,
-                             int divider) {
+void TimeSync::InitTimeUtil(TimeStamp curEpochTime, int multiple, int divider) {
   start_epoch_time_ = GetSysStamp();
   init_time_stamp_ = curEpochTime;
   multiple_ = multiple;
   divider_ = divider;
 }
 
-TimeStamp TimeUtils::GetEpochTimeMs() {
+TimeStamp TimeSync::GetEpochTimeMs() {
   return init_time_stamp_ +
          (GetSysStamp() - start_epoch_time_) * multiple_ / divider_;
 }
-
-void TimeUtils::GetTimeRatio(int *pMultiple, int *pDivider) {
+TimeStamp TimeSync::GetEpochTimeMs(TimeStamp src_stamp) {
+  return init_time_stamp_ +
+         (src_stamp - start_epoch_time_) * multiple_ / divider_;
+}
+void TimeSync::GetTimeRatio(int *pMultiple, int *pDivider) {
   *pMultiple = multiple_;
   *pDivider = divider_;
 }
 
-void TimeUtils::SleepUtil(TimeStamp epochTimeMs) {
+void TimeSync::SleepUtil(TimeStamp epochTimeMs) {
   TimeStamp time = start_epoch_time_ +
                    (epochTimeMs - init_time_stamp_) * divider_ / multiple_;
   std::this_thread::sleep_until(
       std::chrono::system_clock::time_point(std::chrono::milliseconds(time)));
 }
 
-void TimeUtils::SleepFor(TimeStamp timeMs) {
+void TimeSync::SleepFor(TimeStamp timeMs) {
   std::this_thread::sleep_for(
       std::chrono::milliseconds(timeMs * multiple_ / divider_));
 }
 
-void TimeUtils::TimeMstoStringMs(TimeStamp timeMs, std::string &result) {
+void TimeSync::TimeMstoStringMs(TimeStamp timeMs, std::string &result) {
   auto ttime_t = std::chrono::system_clock::to_time_t(
       std::chrono::system_clock::time_point(std::chrono::milliseconds(timeMs)));
   auto tp_sec = std::chrono::system_clock::from_time_t(ttime_t);
@@ -87,7 +89,7 @@ void TimeUtils::TimeMstoStringMs(TimeStamp timeMs, std::string &result) {
   result = time_str;
 }
 
-void TimeUtils::TimeMstoStringMs_Sys(TimeStamp timeMs, std::string &result) {
+void TimeSync::TimeMstoStringMs_Sys(TimeStamp timeMs, std::string &result) {
   int ms = (timeMs % 1000);
   time_t tt = timeMs / 1000;
 
@@ -99,23 +101,23 @@ void TimeUtils::TimeMstoStringMs_Sys(TimeStamp timeMs, std::string &result) {
   result = time_str;
 }
 
-#ifdef SUPPORT_TIME_SYNC
-std::thread TimeUtils::timesync_service_thread_;
-bool TimeUtils::is_running_;
-void *TimeUtils::service_sender_;
-void *TimeUtils::service_receiver_;
-void *TimeUtils::service_ctx_;
-int64_t TimeUtils::device_time_offset_;
+//#ifdef SUPPORT_TIME_SYNC
+std::thread TimeSync::timesync_service_thread_;
+bool TimeSync::is_running_;
+void *TimeSync::service_sender_;
+void *TimeSync::service_receiver_;
+void *TimeSync::service_ctx_;
+int64_t TimeSync::device_time_offset_;
 
-void TimeUtils::StartTimeSyncService() {
+void TimeSync::StartTimeSyncService() {
   //  SetLogLevel(HOBOT_LOG_DEBUG);
   is_running_ = true;
   if (!timesync_service_thread_.joinable()) {
-    timesync_service_thread_ = std::thread(&TimeUtils::TimeSyncThreadFun);
+    timesync_service_thread_ = std::thread(&TimeSync::TimeSyncThreadFun);
   }
 }
 
-void TimeUtils::StopTimeSyncService() {
+void TimeSync::StopTimeSyncService() {
   zmq_close(service_receiver_);
   zmq_close(service_sender_);
   zmq_ctx_destroy(service_ctx_);
@@ -136,7 +138,7 @@ typedef struct {
   int64_t time;
 } time_sync_msg_t;
 
-bool TimeUtils::ClientSyncTime(std::string ip_addr, int max_repeat) {
+bool TimeSync::ClientSyncTime(std::string ip_addr, int max_repeat) {
   //  SetLogLevel(HOBOT_LOG_DEBUG);
   std::string server;
   device_time_offset_ = 0;
@@ -195,7 +197,7 @@ bool TimeUtils::ClientSyncTime(std::string ip_addr, int max_repeat) {
     msg.time = 0;
     // LOGD_T(MODULE_TAG) << "[time_sync] Sending time sync request at " <<
     // i_sync;
-    t_start = TimeUtils::GetEpochTimeMs();
+    t_start = TimeSync::GetEpochTimeMs();
     int len = sizeof(time_sync_msg_t);
     int retry = 10;
     zmq_send(send_sock, (void *)&msg, len, 0);
@@ -206,7 +208,7 @@ bool TimeUtils::ClientSyncTime(std::string ip_addr, int max_repeat) {
 
     if (retry <= 0)
       break;
-    t_end = TimeUtils::GetEpochTimeMs();
+    t_end = TimeSync::GetEpochTimeMs();
     pc_time = (t_start + t_end) / 2;
     //    LOGD_T(MODULE_TAG) << "[time_sync] Msg type = " << msg_rec.msg_type
     //                       << ", time=" << msg_rec.time;
@@ -228,8 +230,8 @@ bool TimeUtils::ClientSyncTime(std::string ip_addr, int max_repeat) {
   }
 
   if (sync_dev_time) {
-    TimeUtils::InitTimeUtil(
-        sync_dev_time - sync_pc_time + TimeUtils::GetEpochTimeMs(), 1, 1);
+    TimeSync::InitTimeUtil(
+        sync_dev_time - sync_pc_time + TimeSync::GetEpochTimeMs(), 1, 1);
     device_time_offset_ = sync_pc_time - sync_dev_time;
   } else {
     //    LOGE_T(MODULE_TAG) << "[time_sync] Timesync failed!!";
@@ -242,7 +244,7 @@ bool TimeUtils::ClientSyncTime(std::string ip_addr, int max_repeat) {
   return sync_dev_time;
 }
 
-void TimeUtils::TimeSyncThreadFun() {
+void TimeSync::TimeSyncThreadFun() {
   //  LOGD_T(MODULE_TAG) << "TimeSyncThreadFun +";
 
   service_ctx_ = zmq_ctx_new();
@@ -277,10 +279,10 @@ void TimeUtils::TimeSyncThreadFun() {
   //  LOGD_T(MODULE_TAG) << "TimeSyncThreadFun -";
 }
 
-int64_t TimeUtils::GetDeviceTimeOffset() { return device_time_offset_; }
-#endif
+int64_t TimeSync::GetDeviceTimeOffset() { return device_time_offset_; }
+//#endif
 
-int64_t TimeUtils::GetSysTimeMs() {
+int64_t TimeSync::GetSysTimeMs() {
   //	SYSTEMTIME sys;
   //	int64_t result;
   //	GetLocalTime(&sys);
@@ -298,7 +300,7 @@ int64_t TimeUtils::GetSysTimeMs() {
 }
 
 
-TimeStamp GetTimeStamp() { return TimeUtils::GetEpochTimeMs(); }
+TimeStamp GetTimeStamp() { return TimeSync::GetEpochTimeMs(); }
 
 TimeRegister::TimeRegister(const std::string info, int verbose,
                            const char *file, int line) {

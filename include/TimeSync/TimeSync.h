@@ -26,10 +26,11 @@ namespace Modo {
 typedef int64_t TimeStamp;
 
 TimeStamp GetTimeStamp();
-
-class TimeUtils {
+int64_t GetSysStamp();
+class TimeSync {
  public:
   static TimeStamp GetEpochTimeMs();
+  static TimeStamp GetEpochTimeMs(TimeStamp src_stamp);
   static void SleepUtil(TimeStamp epochTimeMs);
   static void SleepFor(TimeStamp timeMs);
   static void SetTimeZone(const char *tz);
