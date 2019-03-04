@@ -1,0 +1,31 @@
+# local config
+# same as config in `build.properties` but with high priority
+#
+### linux x86
+#architecture x86
+#platform linux
+#vendor default
+#cmake_c_compiler gcc-4.9
+#cmake_cxx_compiler g++-4.9
+
+### linux armjoc
+#architecture armhf
+#platform linux
+#vendor default
+#cmake_c_compiler /home/haoming/software/ToolChain/joc/gcc-linaro-5.3-2016.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc
+#cmake_cxx_compiler /home/haoming/software/ToolChain/joc/gcc-linaro-5.3-2016.02-x86_64_arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
+
+### linux arm matrix
+#architecture arm-altera
+#platform linux
+#vendor default
+#cmake_c_compiler /home/user/ifs/linaro-arm-linux-gnueabihf-4.9/bin/arm-linux-gnueabihf-gcc
+#cmake_cxx_compiler /home/user/ifs/linaro-arm-linux-gnueabihf-4.9/bin/arm-linux-gnueabihf-g++
+
+
+### android
+architecture arm
+platform android
+vendor default
+ANDROID_NDK /home/user/ifs/android-ndk-r14b
+
