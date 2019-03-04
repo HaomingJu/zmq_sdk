@@ -103,6 +103,7 @@ int HobotDataTransfer::Init(const char *ip, SericeType type) {
     return ret;
   }
   ReceiveBuffMsgPool::Create(10, 50);
+  SendBuffMsgPool::Create(10, 50);
   return 0;
 }
 
@@ -199,8 +200,6 @@ int HobotDataTransfer::InitWorkflow() {
   workflow_main_rt_ctx_ = workflow_main_->Run(oberverbind, observer);
   workflow_main_rt_ctx_->Init();
 
-
-  SendBuffMsgPool::Create(1, 2);
   return 0;
 }
 void HobotDataTransfer::StartReceive() {
