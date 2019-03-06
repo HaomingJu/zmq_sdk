@@ -5,7 +5,10 @@
 #include "HobotProtocol/HobotProtocolWrite.h"
 
 using namespace Modo;
-
+struct SyncFreatureRequest {
+  int32_t camera_id;
+  int32_t traking_id;
+};
 int main() {
   //    int mybuffleng = 30;
   //    int8_t *mybuff = new int8_t(mybuffleng);
@@ -46,17 +49,38 @@ int main() {
 
   //    printf("val[0] is %d\n", val[0]);
   //    printf("val[1] is %d\n", val[1]);
-  int8_t buff[128];
-  Modo::HobotProtocolWrite write(buff, 128);
-  char data[128] = "test";
-  write.WriteHead(0, 0, 0);
-  write.WriteTLV(0, strlen(data), (int8_t *)data);
-  printf("write length: %d\n", write.GetPackageLength());
-  HobotProtocolRead read(buff, 128);
-  int type, length;
-  int8_t *out;
-  read.ReadTLV(type, length, &out);
-  printf("out: %s\n", (char *)out);
+  {
+    int8_t buff[128];
+    Modo::HobotProtocolWrite write(buff, 128);
+    char data[128] = "test";
+    write.WriteHead(0, 0, 0);
+    write.WriteTLV(0, strlen(data), (int8_t *)data);
+    printf("write length: %d\n", write.GetPackageLength());
+    HobotProtocolRead read(buff, 128);
+    int type, length;
+    int8_t *out;
+    read.ReadTLV(type, length, &out);
+    printf("out: %s\n", (char *)out);
+  }
+
+
+  {
+    SyncFreatureRequest request;
+    request.camera_id = 1;
+    request.traking_id = 3;
+    int8_t buff[128];
+    Modo::HobotProtocolWrite write(buff, 128);
+    write.WriteHead(0, 0, 0);
+    write.WriteTLV(1009, sizeof(request), (int8_t *)&request);
+    printf("write length: %d\n", write.GetPackageLength());
+    HobotProtocolRead read(buff, 128);
+    int type, length;
+    int8_t *out;
+    read.ReadTLV(type, length, &out);
+    printf("out: %d,%d,%d,%d\n", type, length,
+           ((SyncFreatureRequest *)out)->camera_id,
+           ((SyncFreatureRequest *)out)->traking_id);
+  }
 
 
   return 0;

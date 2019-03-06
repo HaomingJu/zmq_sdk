@@ -29,7 +29,10 @@ int sync_time() {
   std::cout << "begin sync_time" << std::endl;
   Modo::TimeSync::ClientSyncTime("192.168.1.10", 5);
   int64_t stamp = Modo::TimeSync::GetEpochTimeMs();
-  std::cout << "GetEpochTimeMs, stamp = " << stamp << std::endl;
+  int64_t offset = Modo::TimeSync::GetDeviceTimeOffset();
+  std::cout << "GetEpochTimeMs, stamp [" << stamp << "," << offset << "]"
+            << std::endl;
+  // std::cout << "GetEpochTimeMs, stamp = " << stamp << std::endl;
   return 0;
 }
 
@@ -47,16 +50,16 @@ int main(int argc, char **argv) {
 
   int i = 1;
   while (true) {
-    int64_t stamp = Modo::TimeSync::GetEpochTimeMs();
-    int64_t stamp1 = Modo::TimeSync::GetEpochTimeMs(Modo::GetSysStamp());
-
-    std::cout << "GetEpochTimeMs, stamp [" << stamp << "," << stamp1 << "]"
-              << std::endl;
-    if (i % 20 == 0) {
-      sync_time();
-    }
+    // int64_t stamp = Modo::TimeSync::GetEpochTimeMs();
+    // int64_t stamp1 = Modo::TimeSync::GetEpochTimeMs(Modo::GetSysStamp());
+    // int64_t offset = Modo::TimeSync::GetDeviceTimeOffset();
+    // std::cout << "GetEpochTimeMs, stamp [" << stamp << "," << offset << "]"
+    //           << std::endl;
+    // if (i % 20 == 0) {
+    sync_time();
+    sleep(10);
+    // }
     i++;
-    sleep(1);
   }
 
   return 0;

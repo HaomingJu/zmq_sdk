@@ -16,7 +16,9 @@ class HobotNetworkBase;
 class DispatchModule : public hobot::Module {
  public:
   DispatchModule(std::string class_name)
-      : hobot::Module("Modo", class_name), inited_(false) {}
+      : hobot::Module("Modo", class_name),
+        inited_(false),
+        IsEdianDiff_(false) {}
   virtual ~DispatchModule() {}
 
   int Init(hobot::RunContext *context);
@@ -25,6 +27,8 @@ class DispatchModule : public hobot::Module {
     user_callback_ = callback;
   }
   void Reset();
+
+  bool GetIsEdianDiff() { return IsEdianDiff_; }
   FORWARD_DECLARE(DispatchModule, 0);
 
  protected:
@@ -36,6 +40,7 @@ class DispatchModule : public hobot::Module {
  private:
   TransferCallBack user_callback_;
   bool inited_;
+  bool IsEdianDiff_;
 };
 }
 

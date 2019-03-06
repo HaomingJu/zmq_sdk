@@ -20,6 +20,10 @@ int client_call(Modo::TransferVector &tran_vector) {
   }
   return 0;
 }
+struct SyncFreatureRequest {
+  int32_t camera_id;
+  int32_t traking_id;
+};
 int main(int argc, char **argv) {
   std::string ip;
   std::string port;
@@ -40,14 +44,18 @@ int main(int argc, char **argv) {
     printf("transfer int failed:%s\n", ipstr.c_str());
     return 1;
   }
-  transfer.SetReceiveCallback(client_call);
-  transfer.StartReceive();
-  int i = 0;
+  // transfer.SetReceiveCallback(client_call);
+  // transfer.StartReceive();
+  int64_t i = 0;
   while (1) {
-    //    char data[128] = {0};
-    //    sprintf(data, "client%d", i);
-    //    printf("Send :%s\n", data);
-    //    transfer.Send(Modo::MSG_JPEG, data, strlen(data));
+    //        char data[128] = {0};
+    //        sprintf(data, "client%d", i);
+    printf("Send :%d\n", i);
+    SyncFreatureRequest request;
+    request.camera_id = 1;
+    request.traking_id = i;
+    transfer.Send(1009, (void *)&request, sizeof(request));
+    //    transfer.Send(2002, (void *)&i, sizeof(i));
     sleep(1);
     i++;
   }

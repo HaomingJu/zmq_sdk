@@ -14,6 +14,7 @@ HobotProtocolRead::HobotProtocolRead(int8_t *buff, int bufflen) {
   memcpy(&version, buff + 4, 4);
   if ((uint32_t)version > 0x0000FFFFu) {
     IsEdianDiff_ = true;
+    LOGD << "IsEdianDiff_= " << IsEdianDiff_;
   }
   ReadHead(length_, version_, stamp_, seq_);
   LOGD << "length_= " << length_;

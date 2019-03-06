@@ -11,15 +11,25 @@
 #include <unistd.h>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+struct SyncFreatureRequest {
+  int32_t camera_id;
+  int32_t traking_id;
+};
 int server_call(Modo::TransferVector &tran_vector) {
   printf("server_call \n");
   int size = tran_vector.size();
   for (int i = 0; i < size; i++) {
-    Modo::DataTransferInputMsg msg = tran_vector[i];
+    Modo::DataTransferInputMsg &msg = tran_vector[i];
     printf("server_call[%d,%d,%s] \n", msg.type, msg.datalen, (char *)msg.data);
+    if (msg.type == 1009) {
+      SyncFreatureRequest *sync_request = (SyncFreatureRequest *)msg.data;
+      printf("sync_request[%d,%d]\n", sync_request->camera_id,
+             sync_request->traking_id);
+    }
   }
   return 0;
 }
+
 int main(int argc, char **argv) {
   std::string ip;
   std::string port;
@@ -44,9 +54,9 @@ int main(int argc, char **argv) {
   int i = 0;
   while (1) {
     char data[128] = {0};
-    sprintf(data, "server%d", i);
-    printf("Send :%s\n", data);
-    transfer.Send(1, data, strlen(data));
+    //    sprintf(data, "server%d", i);
+    printf("GetIsEdianDiff :%d\n", transfer.GetIsEdianDiff());
+    //    transfer.Send(1, data, strlen(data));
     sleep(1);
     i++;
   }

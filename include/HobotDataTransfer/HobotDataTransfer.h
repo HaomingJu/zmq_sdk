@@ -76,7 +76,8 @@ class HobotDataTransfer {
         workflow_main_(nullptr),
         trigger_send_(nullptr),
         trigger_receive_(nullptr),
-        observer_(nullptr) {}
+        observer_(nullptr),
+        IsEdianDiff_(false) {}
 
   ~HobotDataTransfer() {}
   /****************************************************************************
@@ -133,7 +134,7 @@ class HobotDataTransfer {
    ***************************************************************************/
   void Finish();
 
-  bool GetIsEdianDiff() { return IsEdianDiff_; }
+  bool GetIsEdianDiff();
 
   static void Swap16(int16_t &value);
 

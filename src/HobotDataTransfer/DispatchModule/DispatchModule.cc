@@ -43,7 +43,8 @@ void DispatchModule::DoForward(const hobot::MessageLists &input,
   int8_t *buff_rec = sp_receive_msg->GetBuff();
   int bufflen_rec = sp_receive_msg->GetBuffSize();
   HobotProtocolRead reader(buff_rec, bufflen_rec);
-
+  IsEdianDiff_ = reader.GetIsEdianDiff();
+  LOGD << "IsEdianDiff_= " << IsEdianDiff_;
   /* header is 24 bytes and has been read, so we should minus 24 */
   while (true) {
     struct DataTransferInputMsg msg;

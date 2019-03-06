@@ -284,13 +284,8 @@ int HobotDataTransfer::Receive(TransferVector &msgvec) {
 
     if (ret > 0) {
       HobotProtocolRead reader((int8_t *)data, datalen);
-      IsEdianDiff_ = false;
-      int32_t version = 0;
-      memcpy(&version, data + 4, 4);
-      if ((uint32_t)version > 0x0000FFFFu) {
-        IsEdianDiff_ = true;
-      }
-
+      IsEdianDiff_ = reader.GetIsEdianDiff();
+      LOGD << "IsEdianDiff_= " << IsEdianDiff_;
       while (true) {
         struct DataTransferInputMsg msg;
         int type_rec;
@@ -314,7 +309,14 @@ int HobotDataTransfer::Receive(TransferVector &msgvec) {
     return -1;
   }
 }
-
+bool HobotDataTransfer::GetIsEdianDiff() {
+  LOGD << "GetIsEdianDiff[" << IsEdianDiff_ << ","
+       << dispatch_->GetIsEdianDiff() << "]";
+  if (IsEdianDiff_ || dispatch_->GetIsEdianDiff()) {
+    return true;
+  }
+  return false;
+}
 void HobotDataTransfer::Swap16(int16_t &value) {
   value = ((value & 0x00FF) << 8) | ((value & 0xFF00) >> 8);
 }
