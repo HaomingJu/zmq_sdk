@@ -15,8 +15,8 @@
 #endif
 #include <string.h>
 #include <time.h>
+#include <zmq.h>
 #include "TimeSync/TimeSync.h"
-
 #define MODULE_TAG "TimeSync"
 namespace Modo {
 
@@ -41,7 +41,9 @@ void TimeSync::Reset() {
   divider_ = 1;
 }
 
-void TimeSync::SetTimeZone(const char *tz) { putenv(const_cast<char *>(tz)); }
+void TimeSync::SetTimeZone(const char *tz) {
+  // putenv(const_cast<char *>(tz));
+}
 
 void TimeSync::InitTimeUtil(TimeStamp curEpochTime, int multiple, int divider) {
   start_epoch_time_ = GetSysStamp();

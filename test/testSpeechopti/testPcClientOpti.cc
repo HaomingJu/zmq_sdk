@@ -66,13 +66,14 @@ void send(AudioInfo *audio_data) {
     tans_vector.push_back(msg1);
   }
 
-  int ret = g_transfer.Send(tans_vector);
-  if (ret) {
-    printf("transferSend failed\n");
-  } else {
-    printf("transferSend sucess\n");
+  while (true) {
+    int ret = g_transfer.Send(tans_vector, true);
+    if (ret) {
+      printf("transfer Send failed\n");
+      continue;
+    }
+    break;
   }
-
   // free(audio_);
 }
 

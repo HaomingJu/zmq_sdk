@@ -12,9 +12,7 @@
 //#ifndef USE_SDK_PROTO
 #define SUPPORT_TIME_SYNC
 //#endif
-#ifdef SUPPORT_TIME_SYNC
-#include <zmq.h>
-#include <thread>
+#ifdef SUPPORT_TIME_SYNC #include < thread >
 #define TIME_SYNC_SERVICE_PORT "55555"
 #define TIME_SYNC_RESPONSE_PORT "55556"
 #endif
