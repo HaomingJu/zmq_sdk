@@ -7,6 +7,7 @@
 
 //#include <hobot/hobot.h>
 #include "ReceiveModule.h"
+#include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
 #include "hobotlog/hobotlog.hpp"
 #include "message/BuffMsg.h"
@@ -44,7 +45,7 @@ int ReceiveModule::Init(hobot::RunContext *context) {
     return 0;
   initd_ = true;
   LOGD << "Init";
-  //ReceiveBuffMsgPool::Create(10, 50);
+  // ReceiveBuffMsgPool::Create(10, 50);
   return 0;
 }
 void ReceiveModule::Reset() {

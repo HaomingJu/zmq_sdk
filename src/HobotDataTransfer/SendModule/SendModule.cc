@@ -8,6 +8,7 @@
 //#include <hobot/hobot.h>
 #include "../../HobotDataTransfer/SendModule/SendModule.h"
 #include "../message/BuffMsg.h"
+#include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
 #include "hobotlog/hobotlog.hpp"
 

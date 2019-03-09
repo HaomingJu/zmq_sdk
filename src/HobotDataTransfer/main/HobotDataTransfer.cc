@@ -10,6 +10,7 @@
 #include <memory.h>
 #include <unistd.h>
 #include "DispatchModule/DispatchModule.h"
+#include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
 #include "HobotProtocol/HobotProtocolRead.h"
 #include "HobotProtocol/HobotProtocolWrite.h"

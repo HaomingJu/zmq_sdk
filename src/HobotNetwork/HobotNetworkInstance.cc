@@ -1,8 +1,14 @@
 #include "HobotNetwork/HobotNetworkInstance.h"
+#include <assert.h>
+#include <errno.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <zmq.h>
+#include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotZmqClient.h"
 #include "HobotNetwork/HobotZmqServer.h"
-
+#include "hobotlog/hobotlog.hpp"
 namespace Modo {
 HobotNetworkBase *HobotNetworkInstance::CreateClientInstance(
     HobotNetworkType type) {
