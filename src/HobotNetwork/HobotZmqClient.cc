@@ -53,7 +53,7 @@ int HobotZmqClient::Init(const char *config) {
   return 0;
 }
 void HobotZmqClient::Finish() {
-  zmq_threadclose(thread_);
+  // zmq_threadclose(thread_);
   HobotNetworkBase::Finish();
 }
 }
