@@ -35,10 +35,10 @@ artifact3   com.hobot.native.hobot-dms:libzmq:4.2.3:zip
 # install repository
 #install_repository  file:///data/artifactory
 install_repository  http://ci.horizon-robotics.com:8081/artifactory/libs-release-local/
-username   deploy-alpha
-password   deploy-alpha@hobot.cc
+username   zhengbo.cai
+password   Aa123456
 
 # install artifact
-install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.4:zip
+install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.14:zip
 
 

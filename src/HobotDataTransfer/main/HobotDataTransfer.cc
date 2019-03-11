@@ -16,6 +16,7 @@
 #include "HobotProtocol/HobotProtocolWrite.h"
 #include "ReceiveModule/ReceiveModule.h"
 #include "SendModule/SendModule.h"
+#include "TimeSync/TimeSync.h"
 #include "hobotlog/hobotlog.hpp"
 #include "message/BuffMsg.h"
 
@@ -105,6 +106,7 @@ int HobotDataTransfer::Init(const char *ip, SericeType type) {
   }
   ReceiveBuffMsgPool::Create(10, 50);
   SendBuffMsgPool::Create(10, 50);
+  LOGD << "GetEpochTimeMs:" << TimeSync::GetEpochTimeMs();
   return 0;
 }
 
