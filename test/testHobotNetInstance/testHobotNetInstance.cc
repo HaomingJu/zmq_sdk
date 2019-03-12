@@ -7,12 +7,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
 #include <string>
 #include "HobotNetwork/HobotNetworkInstance.h"
-#include "HobotNetwork/HobotZmqServer.h"
 #include "HobotNetwork/HobotZmqClient.h"
+#include "HobotNetwork/HobotZmqServer.h"
+#include "base/base.h"
 
 int main(int argc, char **argv) {
   // std::string ip;

@@ -4,6 +4,6 @@ include_directories(
 #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${PROJECT_SOURCE_DIR}/src/symbols.lst")
 add_subdirectory(HobotDataTransfer)
 add_subdirectory(HobotNetwork)
-add_subdirectory(utils)
+#add_subdirectory(utils)
 add_subdirectory(HobotProtocol)
 add_subdirectory(TimeSync)

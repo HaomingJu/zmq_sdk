@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "base/base.h"
 FILE *g_fp;
 int server_call(Modo::TransferVector &tran_vector) {
   printf("server_call \n");
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   while (1) {
-    sleep(1);
+    SLEEP(1);
   }
   return 0;
 }

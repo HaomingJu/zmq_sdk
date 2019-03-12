@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <memory.h>
 #include <stdio.h>
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 
 namespace Modo {
 HobotProtocolRead::HobotProtocolRead(int8_t *buff, int bufflen) {

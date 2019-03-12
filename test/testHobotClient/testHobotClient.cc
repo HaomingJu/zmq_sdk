@@ -9,10 +9,10 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
 #include <string>
 #include "HobotNetwork/HobotZmqClient.h"
+#include "base/base.h"
 
 using namespace Modo;
 
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     //    char buff[128];
     //    int sz = client.RecvData(buf, 128);
     //    printf("RecvData datasize = %d,buf=%s \n", sz, buf);
-    sleep(1);
+    SLEEP(1);
   }
   client.Finish();
   return 0;

@@ -3,7 +3,7 @@ project(DispatchModule)
 file(GLOB CPP_FILES *.cc)
 
 set(library_list
-
+     ${LOG_LIB}
     )
 
 

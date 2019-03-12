@@ -8,10 +8,10 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <iostream>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "base/base.h"
 
 int main(int argc, char **argv) {
   std::string ip;

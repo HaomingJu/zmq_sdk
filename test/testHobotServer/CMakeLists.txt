@@ -9,7 +9,7 @@ add_executable(${PROJECT_NAME} ${CPP_FILES})
 
 target_link_libraries(${PROJECT_NAME}
     HobotDataTransfer)
-
+set_target_properties(${PROJECT_NAME} PROPERTIES INSTALL_RPATH "../lib")
 
 install (TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin)

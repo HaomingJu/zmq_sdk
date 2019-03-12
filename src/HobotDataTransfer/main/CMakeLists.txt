@@ -3,27 +3,30 @@ project(HobotDataTransfer)
 set(CPP_FILES HobotDataTransfer.cc)
 #message(">>>>>>>>>>>>TRANSFER_PROJECT_DIRS : ${TRANSFER_PROJECT_DIRS}")
 include_directories(${TRANSFER_PROJECT_DIRS})
-if (${_PLATFORM} STREQUAL "android")
-    set(LOG_LIB log)
-else ()
-    set(LOG_LIB "")
-endif()
+message(">>>>>>>>>>>>>_PLATFORM:${_PLATFORM}")
+
+
+message(">>>>>>>>>>>>>LOG_LIB:${LOG_LIB}")
 set(library_list
-    hobotlog
-    hobotsdk
+	hobotsdk
     hobotthread
     SendModule
     ReceiveModule
     DispatchModule
-    utils
+   # utils
     HobotNetwork
     HobotProtocol
     TimeSync
     ${LOG_LIB}
+    ${WIN_LIB}
     )
 
-
-add_library(${PROJECT_NAME} SHARED ${CPP_FILES})
+add_library(HobotDataTransferStatic STATIC ${CPP_FILES})
+add_library(HobotDataTransfer SHARED ${CPP_FILES})
+SET_TARGET_PROPERTIES (HobotDataTransferStatic PROPERTIES OUTPUT_NAME "HobotDataTransfer")
+GET_TARGET_PROPERTY (OUTPUT_VALUE HobotDataTransferStatic OUTPUT_NAME)
+SET_TARGET_PROPERTIES (HobotDataTransferStatic PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+SET_TARGET_PROPERTIES (HobotDataTransfer PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
 target_link_libraries(
     ${PROJECT_NAME}

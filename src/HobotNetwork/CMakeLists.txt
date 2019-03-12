@@ -3,8 +3,8 @@ project(HobotNetwork)
 file(GLOB CPP_FILES *.cc)
 
 set(library_list
-     zmq
-     hobotlog
+     ${ZMQ_LIB}
+     ${LOG_LIB}
     )
 
 add_library(${PROJECT_NAME} STATIC ${CPP_FILES})

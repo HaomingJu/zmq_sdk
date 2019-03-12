@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "base/base.h"
 struct SyncFreatureRequest {
   int32_t camera_id;
   int32_t traking_id;
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     //    sprintf(data, "server%d", i);
     printf("GetIsEdianDiff :%d\n", transfer.GetIsEdianDiff());
     //    transfer.Send(1, data, strlen(data));
-    sleep(1);
+    SLEEP(1);
     i++;
   }
   transfer.Finish();

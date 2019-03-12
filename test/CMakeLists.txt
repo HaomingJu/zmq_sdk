@@ -1,3 +1,4 @@
+include_directories(${zmq_sdk_INCLUDE_DIRS})
 add_subdirectory(testClient)
 add_subdirectory(testServer)
 

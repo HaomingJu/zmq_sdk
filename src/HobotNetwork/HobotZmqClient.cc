@@ -10,8 +10,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 
 namespace Modo {
 

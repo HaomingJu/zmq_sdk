@@ -10,7 +10,7 @@
 #include "../message/BuffMsg.h"
 #include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 
 namespace Modo {
 FORWARD_DEFINE(SendModule, 0) {

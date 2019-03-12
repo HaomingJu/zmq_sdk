@@ -4,11 +4,9 @@
  *  Created on: Jan 13, 2019
  *      Author: user
  */
-
 #include "HobotDataTransfer/HobotDataTransfer.h"
 #include <hobot/hobot.h>
 #include <memory.h>
-#include <unistd.h>
 #include "DispatchModule/DispatchModule.h"
 #include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
@@ -17,7 +15,7 @@
 #include "ReceiveModule/ReceiveModule.h"
 #include "SendModule/SendModule.h"
 #include "TimeSync/TimeSync.h"
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 #include "message/BuffMsg.h"
 
 namespace Modo {

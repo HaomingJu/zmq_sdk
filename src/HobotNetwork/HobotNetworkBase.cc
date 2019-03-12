@@ -9,9 +9,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 namespace Modo {
 int HobotNetworkBase::RecvData(void *buff, size_t bufflen) {
   int recv_size = 0;
@@ -75,6 +74,4 @@ void HobotNetworkBase::Finish() {
   zmq_ctx_destroy(m_context);
   free(m_buff);
 }
-
 }
-

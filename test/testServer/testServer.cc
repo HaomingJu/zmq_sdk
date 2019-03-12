@@ -7,9 +7,9 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <zmq.h>
 #include <string>
+#include "base/base.h"
 
 int main(int argc, char **argv) {
   std::string ip;

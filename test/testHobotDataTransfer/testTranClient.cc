@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "base/base.h"
 int client_call(Modo::TransferVector &tran_vector) {
   printf("server_call \n");
   int size = tran_vector.size();
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     request.traking_id = i;
     transfer.Send(1009, (void *)&request, sizeof(request));
     //    transfer.Send(2002, (void *)&i, sizeof(i));
-    // sleep(1);
+    SLEEP(1);
     i++;
   }
   transfer.Finish();

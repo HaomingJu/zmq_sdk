@@ -8,9 +8,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
 #include <string>
+#include "base/base.h"
 int main(int argc, char **argv) {
   std::string ip;
   std::string port;
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     printf("send  buff=%s\n", buff);
     int ret = zmq_send(requester, buff, strlen(buff), ZMQ_DONTWAIT);
     printf("zmq_send size=%d\n", ret);
-    sleep(1);
+    SLEEP(1);
     i++;
   }
   //  int request_nbr;

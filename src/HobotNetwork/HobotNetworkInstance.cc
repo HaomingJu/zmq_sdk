@@ -3,12 +3,11 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
 #include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotZmqClient.h"
 #include "HobotNetwork/HobotZmqServer.h"
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 namespace Modo {
 HobotNetworkBase *HobotNetworkInstance::CreateClientInstance(
     HobotNetworkType type) {

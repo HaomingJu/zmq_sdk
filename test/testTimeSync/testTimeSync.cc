@@ -9,11 +9,11 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "base/base.h"
 //#include <zmq.h>
-#include <arpa/inet.h>
+//#include <arpa/inet.h>
 #include <chrono>
 #include <iostream>
 #include <string>
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     //           << std::endl;
     // if (i % 20 == 0) {
     sync_time();
-    sleep(10);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10000));
     // }
     i++;
   }

@@ -9,9 +9,9 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
 #include <string>
+#include "base/base.h"
 static int get_monitor_event_internal(void *monitor, int *value, char **address,
                                       int recv_flag) {
   //  First frame in message contains event number and value
@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
       printf("event:%d,%d\n", event, ZMQ_EVENT_ALL);
       pre_event = event;
     }
-    usleep(100000);
+    SLEEP(100000);
   }
 
 

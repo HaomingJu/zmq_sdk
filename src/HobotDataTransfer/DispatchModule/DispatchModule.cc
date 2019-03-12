@@ -7,7 +7,7 @@
 
 #include "DispatchModule.h"
 #include "HobotProtocol/HobotProtocolRead.h"
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 #include "message/BuffMsg.h"
 
 namespace Modo {

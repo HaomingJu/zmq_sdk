@@ -9,7 +9,7 @@
 #include <thread>
 
 #ifdef _WIN32
-#include <windows.h>
+
 #else
 #include <sys/time.h>
 #endif
@@ -299,6 +299,7 @@ int64_t TimeSync::GetSysTimeMs() {
   //	temptm.tm_yday = 0;
   //	result = mktime(&temptm);
   //	return result*1000 + sys.wMilliseconds;
+  return 0;
 }
 
 

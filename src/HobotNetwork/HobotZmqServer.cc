@@ -11,9 +11,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <zmq.h>
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 namespace Modo {
 int HobotZmqServer::Init(const char *config) {
   LOGD << "config= " << config;

@@ -9,7 +9,7 @@
 #include "ReceiveModule.h"
 #include "HobotNetwork/HobotNetworkBase.h"
 #include "HobotNetwork/HobotNetworkInstance.h"
-#include "hobotlog/hobotlog.hpp"
+#include "base/base.h"
 #include "message/BuffMsg.h"
 
 namespace Modo {
