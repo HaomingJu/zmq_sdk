@@ -8,6 +8,7 @@
 #ifndef HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQCLIENT_H_
 #define HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQCLIENT_H_
 
+#include <pthread.h>
 #include <zmq.h>
 #include "HobotNetworkBase.h"
 
@@ -18,14 +19,21 @@ class HobotZmqClient : public HobotNetworkBase {
   ~HobotZmqClient() {}
   int Init(const char *config);
   void Finish();
+  friend void *StartMonitor(void *args);
 
  private:
-  void *thread_;
-  //  void *m_context;
-  //  void *m_requester;
-  //  void *m_buff;
-  //  size_t m_buff_size;
+  int NewRequester(const char *config);
+  void DestroyRequester();
+  pthread_t m_thread;
 };
-}
+
+// this is a monitor for communication
+struct MonitorArgs {
+  HobotZmqClient *client;
+  const char *config;
+};
+
+void *StartMonitor(void *args);
+}  // namespace Modo
 
 #endif /* HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQCLIENT_H_ */

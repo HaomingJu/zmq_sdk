@@ -19,7 +19,8 @@ class HobotNetworkBase {
         m_buff_size(0) {}
   virtual ~HobotNetworkBase() {}
   virtual int Init(const char *config) = 0;
-  virtual int SendData(const void *data = nullptr, size_t datalen = 0, int timeout=0);
+  virtual int SendData(const void *data = nullptr, size_t datalen = 0,
+                       int timeout = 0);
   virtual int RecvData(void *buff = nullptr, size_t bufflen = 0);
   virtual int CopyRecvData(void *buff, size_t bufflen);
   virtual void Finish();
@@ -27,10 +28,11 @@ class HobotNetworkBase {
  protected:
   void *m_context;
   void *m_requester;
+  void *m_monitor;
   void *m_buff;
   size_t m_buff_size;
 };
-}
+}  // namespace Modo
 
 
 #endif /* ZMQ_SDK_SRC_HOBOTNETWORK_HOBOTNETWORKBASE_H_ */
