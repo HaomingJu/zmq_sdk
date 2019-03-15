@@ -78,12 +78,12 @@ int get_monitor_event(void *monitor, int *value, char **address) {
 }
 
 int HobotZmqClient::NewRequester(const char *config) {
-  m_context = zmq_ctx_new();
-  if (!m_context) {
-    LOGE << "zmq_ctx_new failed ";
-    printf("2\n");
-    return 1;
-  }
+  // m_context = zmq_ctx_new();
+  // if (!m_context) {
+  //   LOGE << "zmq_ctx_new failed ";
+  //   printf("2\n");
+  //   return 1;
+  // }
 
   m_requester = zmq_socket(m_context, ZMQ_DEALER);
   if (!m_requester) {
@@ -103,7 +103,7 @@ int HobotZmqClient::NewRequester(const char *config) {
 
 void HobotZmqClient::DestroyRequester() {
   zmq_close(m_requester);
-  zmq_ctx_destroy(m_context);
+  // zmq_ctx_destroy(m_context);
 }
 
 void *StartMonitor(void *args) {
@@ -111,8 +111,12 @@ void *StartMonitor(void *args) {
   HobotZmqClient *client = arg->client;
   const char *config = arg->config;
 
+  printf("zmq_socket_monitor begin\n");
+  zmq_socket_monitor(client->m_requester, "inproc://monitor-client",
+                     ZMQ_EVENT_ALL);
+  printf("zmq_socket_monitor end\n");
   client->m_monitor = zmq_socket(client->m_context, ZMQ_PAIR);
-  assert(client->m_monitor != NULL);
+  assert(client->m_monitor);
   int rc = zmq_connect(client->m_monitor, "inproc://monitor-client");
   assert(rc == 0);
 
@@ -143,6 +147,13 @@ int HobotZmqClient::Init(const char *config) {
     return 1;
   }
   LOGD << "HobotZmqClient Init config= " << config;
+
+  m_context = zmq_ctx_new();
+  if (!m_context) {
+    LOGE << "zmq_ctx_new failed ";
+    printf("2\n");
+    return 1;
+  }
 
   int ret = NewRequester(config);
   if (ret) {

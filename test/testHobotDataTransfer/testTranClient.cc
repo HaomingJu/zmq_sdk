@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     request.traking_id = i;
     transfer.Send(1009, (void *)&request, sizeof(request));
     //    transfer.Send(2002, (void *)&i, sizeof(i));
-    sleep(1);
+    // sleep(1);
     i++;
   }
   transfer.Finish();
