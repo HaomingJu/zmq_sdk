@@ -18,7 +18,8 @@ class HobotZmqServer : public HobotNetworkBase {
   HobotZmqServer() {}
   ~HobotZmqServer() {}
   int Init(const char *config);
-
+  int NewRequester(const char *config){};
+  void DestroyRequester(){};
   //
   // private:
   //  void *m_context;
@@ -26,5 +27,5 @@ class HobotZmqServer : public HobotNetworkBase {
   //  void *m_buff;
   //  size_t m_buff_size;
 };
-}
+}  // namespace Modo
 #endif /* HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQSEVER_H_ */

@@ -48,8 +48,14 @@ int HobotZmqServer::Init(const char *config) {
     LOGD << "zmq_bind failed ";
     return 1;
   }
+
+  MonitorArgs args;
+  args.config = config;
+  args.client = this;
+  zmq_threadstart(StartMonitor, (void *)&args);
+
   m_buff_size = 2 * 1024 * 1024;
   m_buff = malloc(m_buff_size);
   return 0;
 }
-}
+}  // namespace Modo

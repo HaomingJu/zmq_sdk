@@ -18,22 +18,10 @@ class HobotZmqClient : public HobotNetworkBase {
   HobotZmqClient() {}
   ~HobotZmqClient() {}
   int Init(const char *config);
-  void Finish();
-  friend void *StartMonitor(void *args);
-
- private:
   int NewRequester(const char *config);
   void DestroyRequester();
-  pthread_t m_thread;
+  void Finish();
 };
-
-// this is a monitor for communication
-struct MonitorArgs {
-  HobotZmqClient *client;
-  const char *config;
-};
-
-void *StartMonitor(void *args);
 }  // namespace Modo
 
 #endif /* HOBOT_DMS_3RD_HOBOTNETWORK_SRC_HOBOTZMQCLIENT_H_ */

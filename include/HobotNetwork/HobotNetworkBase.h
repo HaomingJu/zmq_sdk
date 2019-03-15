@@ -25,6 +25,9 @@ class HobotNetworkBase {
                        int timeout = -1);
   virtual int CopyRecvData(void *buff, size_t bufflen);
   virtual void Finish();
+  virtual int NewRequester(const char *config) = 0;
+  virtual void DestroyRequester() = 0;
+  friend void StartMonitor(void *args);
 
  protected:
   void *m_context;
@@ -33,6 +36,14 @@ class HobotNetworkBase {
   void *m_buff;
   size_t m_buff_size;
 };
+
+// this is a monitor for communication
+struct MonitorArgs {
+  HobotNetworkBase *client;
+  const char *config;
+};
+
+void StartMonitor(void *args);
 }  // namespace Modo
 
 
