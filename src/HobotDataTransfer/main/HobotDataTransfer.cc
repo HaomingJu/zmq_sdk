@@ -207,17 +207,20 @@ void HobotDataTransfer::StartReceive() {
   workflow_main_->Feed(workflow_main_rt_ctx_, trigger_receive_, 0,
                        hobot::spMessage());
 }
-int HobotDataTransfer::DoSend(spSendMsg sp_send_msg, bool sync) {
+int HobotDataTransfer::DoSend(spSendMsg sp_send_msg, int timeout, bool sync) {
   if (sync == true) {
     void *data = sp_send_msg->GetBuff();
     int datalen = sp_send_msg->GetDataSize();
-    network_->SendData(data, datalen);
+    int ret = network_->SendData(data, datalen, timeout);
+    if (ret < 0)
+      return ret;
+    return 0;
   } else {
     workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   }
   return 0;
 }
-int HobotDataTransfer::Send(TransferVector &msgs, bool sync) {
+int HobotDataTransfer::Send(TransferVector &msgs, int timeout, bool sync) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
 
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
@@ -239,11 +242,12 @@ int HobotDataTransfer::Send(TransferVector &msgs, bool sync) {
   }
   sp_send_msg->SetDataSize(writer.GetPackageLength());
   LOGD << "HobotDataTransfer::Send length=" << writer.GetPackageLength();
-  return DoSend(sp_send_msg, sync);
+  return DoSend(sp_send_msg, timeout, sync);
   // workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   // return 0;
 }
-int HobotDataTransfer::Send(int type, void *data, int datalen, bool sync) {
+int HobotDataTransfer::Send(int type, void *data, int datalen, int timeout,
+                            bool sync) {
   spSendMsg sp_send_msg = SendBuffMsgPool::GetSharedPtrEx(true);
 
   // todo:  完善组包流程：取出传入msg-->组包-->发送到Sender模块
@@ -266,7 +270,7 @@ int HobotDataTransfer::Send(int type, void *data, int datalen, bool sync) {
   writer.WriteTLV(type, datalen, (int8_t *)data);
   LOGD << "HobotDataTransfer::length=" << writer.GetPackageLength();
   sp_send_msg->SetDataSize(writer.GetPackageLength());
-  return DoSend(sp_send_msg, sync);
+  return DoSend(sp_send_msg, timeout, sync);
   // workflow_main_->Feed(workflow_main_rt_ctx_, send_, 0, sp_send_msg);
   // return 0;
 }
@@ -274,41 +278,41 @@ void HobotDataTransfer::SetReceiveCallback(TransferCallBack func) {
   dispatch_->SetReceiveCallback(func);
 }
 
-int HobotDataTransfer::Receive(TransferVector &msgvec) {
+int HobotDataTransfer::Receive(TransferVector &msgvec, int timeout) {
   spReceiveMsg sp_receive_msg = ReceiveBuffMsgPool::GetSharedPtrEx(true);
-  if (sp_receive_msg) {
-    void *data = sp_receive_msg->GetBuff();
-    int datalen = sp_receive_msg->GetBuffSize();
-    LOGD << "do RecvData begin";
-    int ret = network_->RecvData(data, datalen);
-    LOGD << "do RecvData end,ret = " << ret;
-
-    if (ret > 0) {
-      HobotProtocolRead reader((int8_t *)data, datalen);
-      IsEdianDiff_ = reader.GetIsEdianDiff();
-      LOGD << "IsEdianDiff_= " << IsEdianDiff_;
-      while (true) {
-        struct DataTransferInputMsg msg;
-        int type_rec;
-        int8_t *data_rec;
-        int datalen_rec;
-        int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
-        if (ret)
-          break;
-        msg.type = type_rec;
-        msg.data = data_rec;
-        msg.datalen = datalen_rec;
-        LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
-             << (char *)msg.data << "]";
-        msgvec.push_back(msg);
-      }
-      return 0;
-    } else {
-      return -1;
-    }
-  } else {
-    return -1;
+  if (!sp_receive_msg) {
+    return TRANSFER_PTR_NULL;
   }
+
+  void *data = sp_receive_msg->GetBuff();
+  int datalen = sp_receive_msg->GetBuffSize();
+  LOGD << "do RecvData begin";
+  int ret = network_->RecvData(data, datalen, timeout);
+  LOGD << "do RecvData end,ret = " << ret;
+
+  if (ret < 0) {
+    return ret;
+  }
+
+  HobotProtocolRead reader((int8_t *)data, datalen);
+  IsEdianDiff_ = reader.GetIsEdianDiff();
+  LOGD << "IsEdianDiff_= " << IsEdianDiff_;
+  while (true) {
+    struct DataTransferInputMsg msg;
+    int type_rec;
+    int8_t *data_rec;
+    int datalen_rec;
+    int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
+    if (ret)
+      break;
+    msg.type = type_rec;
+    msg.data = data_rec;
+    msg.datalen = datalen_rec;
+    LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
+         << (char *)msg.data << "]";
+    msgvec.push_back(msg);
+  }
+  return 0;
 }
 bool HobotDataTransfer::GetIsEdianDiff() {
   LOGD << "GetIsEdianDiff[" << IsEdianDiff_ << ","

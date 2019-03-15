@@ -10,6 +10,7 @@
 #include <string.h>
 #include <string>
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "TimeSync/TimeSync.h"
 #include "base/base.h"
 int client_call(Modo::TransferVector &tran_vector) {
   printf("server_call \n");
@@ -47,18 +48,25 @@ int main(int argc, char **argv) {
   // transfer.SetReceiveCallback(client_call);
   // transfer.StartReceive();
   int64_t i = 0;
+  long time_start = Modo::GetSysStamp();
   while (1) {
-    //        char data[128] = {0};
-    //        sprintf(data, "client%d", i);
-    printf("Send :%d\n", i);
-    SyncFreatureRequest request;
-    request.camera_id = 1;
-    request.traking_id = i;
-    transfer.Send(1009, (void *)&request, sizeof(request));
+    char data[128] = {0};
+    sprintf(data, "client%d", i);
+    // printf("Send :%d\n", i);
+    //    SyncFreatureRequest request;
+    //    request.camera_id = 1;
+    //    request.traking_id = i;
+    ret = transfer.Send(1009, (void *)data, 32, 1000, true);
+    printf("transfer.Send ret :%d\n", ret);
     //    transfer.Send(2002, (void *)&i, sizeof(i));
-    SLEEP(1);
     i++;
+    if (i > 10000) {
+      break;
+    }
   }
+  long span = (Modo::GetSysStamp() - time_start);
+  int iops = i * 1000 / span;
+  printf("iops=%d,span = %ld,times=%d\n", iops, span, i);
   transfer.Finish();
   return 0;
 }

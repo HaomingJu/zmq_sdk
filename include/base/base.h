@@ -19,5 +19,8 @@
 #define SLEEP Sleep
 #endif
 
-
+#define TRANSFER_TIMEOUT -1
+#define TRANSFER_UNCONNECT_ERROR -2
+#define TRANSFER_BUG_ERROR -3
+#define TRANSFER_PTR_NULL -4
 #endif /* ZMQ_SDK_INCLUDE_BASE_BASE_H_ */

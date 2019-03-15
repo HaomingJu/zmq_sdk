@@ -29,7 +29,7 @@ void ReceiveModule::DoForward(const hobot::MessageLists &input,
     void *data = sp_receive_msg->GetBuff();
     int datalen = sp_receive_msg->GetBuffSize();
     LOGD << "do RecvData begin";
-    int ret = receive_->RecvData(data, datalen);
+    int ret = receive_->RecvData(data, datalen, -1);
     LOGD << "do RecvData end,ret = " << ret;
     if (ret > 0) {
       workflow->Return(this, 0, sp_receive_msg, context);

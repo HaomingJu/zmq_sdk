@@ -55,9 +55,11 @@ int main(int argc, char **argv) {
   while (1) {
     char data[128] = {0};
     //    sprintf(data, "server%d", i);
-    printf("GetIsEdianDiff :%d\n", transfer.GetIsEdianDiff());
-    //    transfer.Send(1, data, strlen(data));
-    SLEEP(1);
+    // printf("GetIsEdianDiff :%d\n", transfer.GetIsEdianDiff());
+    //    Modo::TransferVector msgvec;
+    //    int ret = transfer.Receive(msgvec,1000);
+    //    printf("transfer.Receive ret=%d",ret);
+    SLEEP(1000);
     i++;
   }
   transfer.Finish();

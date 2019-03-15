@@ -21,7 +21,8 @@ class HobotNetworkBase {
   virtual int Init(const char *config) = 0;
   virtual int SendData(const void *data = nullptr, size_t datalen = 0,
                        int timeout = 0);
-  virtual int RecvData(void *buff = nullptr, size_t bufflen = 0);
+  virtual int RecvData(void *buff = nullptr, size_t bufflen = 0,
+                       int timeout = -1);
   virtual int CopyRecvData(void *buff, size_t bufflen);
   virtual void Finish();
 
