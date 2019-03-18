@@ -1,0 +1,216 @@
+syntax = "proto2";
+
+package DMSOutputProtocol;
+
+// int rectangle type
+message Rect {
+  required int32 left = 1;
+  required int32 right = 2;
+  required int32 top = 3;
+  required int32 bottom = 4;
+}
+
+message Vector_3f {
+  required float x = 1;
+  required float y = 2;
+  required float z = 3;
+}
+
+// int point type
+message Point {
+  required int32 x = 1;
+  required int32 y = 2;
+}
+
+enum ImageCheckEnum {
+  IMAGE_CHECK_NORMAL = 0;
+  IMAGE_CHECK_BLURRED = 1;
+  IMAGE_CHECK_SHELTER = 2;
+  IMAGE_CHECK_FREEZED = 3;
+}
+
+// eye state
+enum EyeState {
+  EYE_ST_UNKNOW = 0;
+  EYE_ST_OPEN = 1;
+  EYE_ST_CLOSE = 2;
+}
+
+enum SmokeState {
+  SMOKE_ST_UNKNOW = 0;
+  SMOKE_ST_EXIST = 1;
+  SMOKE_ST_NOEXIST = 2;
+}
+
+// state result
+enum StateEnum {
+  STATE_NONE = 0;
+  STATE_DDW_L = 1;
+  STATE_DDW_R = 2;
+  STATE_DDW_U = 3;
+  STATE_DDW_D = 4;
+  STATE_DDW_LU = 5;
+  STATE_DDW_RU = 6;
+  STATE_DDW_LD = 7;
+  STATE_DDW_RD = 8;
+  STATE_DFW = 9;
+  STATE_DYA = 10;
+  STATE_DSA = 11;
+  STATE_DAA = 12;
+}
+
+// event result
+enum EventEnum {
+  EVENT_NONE = 0;
+  EVENT_DDW_L = 1;
+  EVENT_DDW_R = 2;
+  EVENT_DDW_U = 3;
+  EVENT_DDW_D = 4;
+  EVENT_DDW_LU = 5;
+  EVENT_DDW_RU = 6;
+  EVENT_DDW_LD = 7;
+  EVENT_DDW_RD = 8;
+  EVENT_DFW = 9;
+  EVENT_DYA = 10;
+  EVENT_DSA = 11;
+  EVENT_DAA = 12;
+}
+
+enum FaceDirEnum {
+  FACE_DIR_UNKNOW = 0x00;
+  FACE_DIR_FRONT = 0x01;
+  FACE_DIR_LEFT = 0x02;
+  FACE_DIR_RIGHT = 0x04;
+  FACE_DIR_UP = 0x08;
+  FACE_DIR_DOWN = 0x10;
+  FACE_DIR_LEFTUP = 0x0A;
+  FACE_DIR_RIGHTUP = 0x0C;
+  FACE_DIR_LEFTDOWN = 0x12;
+  FACE_DIR_RIGHTDOWN = 0x14;
+}
+
+enum PersonType {
+  PERSON_UNKNOW = 0;
+  PERSON_DRIVER = 1;
+  PERSON_COPILOT = 2;
+  PERSON_PASSENGER = 3;
+};
+
+enum CameraType {
+  CAMERA_IR = 0;
+  CAMERA_RGB = 1;
+  CAMERA_SIZE = 2;
+};
+
+message StateTrigger {
+  required StateEnum ddw_l = 1;
+  required StateEnum ddw_r = 2;
+  required StateEnum ddw_u = 3;
+  required StateEnum ddw_d = 4;
+  required StateEnum ddw_lu = 5;
+  required StateEnum ddw_ld = 6;
+  required StateEnum ddw_ru = 7;
+  required StateEnum ddw_rd = 8;
+  required StateEnum dfw = 9;
+  required StateEnum dya = 10;
+  required StateEnum dsa = 11;
+}
+
+message EyeScore {
+  required float left_open_score = 1;
+  required float left_close_score = 2;
+  required float left_unknow_score = 3;
+  required float right_open_score = 4;
+  required float right_close_score = 5;
+  required float right_unknow_score = 6;
+}
+
+message SmokeScore {
+  required float no_smoke_normal = 1;
+  required float smoke_normal = 2;
+  required float no_smoke_suspect = 3;
+}
+
+message RotRPY {
+  required float roll = 1;
+  required float pitch = 2;
+  required float yaw = 3;
+}
+
+message RotVector {
+  required Vector_3f unit_vector = 1;
+}
+
+message FaceDirection {
+  required FaceDirEnum face_dir = 1;
+  optional RotRPY cur_angle_rpy = 2;
+  optional RotRPY avr_angle_rpy = 3;
+  optional RotVector cur_angle_unit_vector = 4;
+  optional RotVector avr_angle_unit_vector = 5;
+}
+
+message EventResult {
+  required EventEnum event = 1;
+}
+
+message DAAResult {
+  required EventEnum daa_event = 1;
+}
+
+message StateResult {
+  required StateEnum state = 1;
+}
+
+message LDMK {
+  repeated Point face_feature_points = 1;
+}
+
+message EyeResult {
+  required EyeState left = 1;
+  required EyeState right = 2;
+  required Rect left_roi = 3;
+  required Rect right_roi = 4;
+  optional EyeScore score = 5;
+}
+
+message SmokeResult {
+  required SmokeState smoke_state = 1;
+  required Rect smoke_roi = 2;
+  optional SmokeScore score = 3;
+}
+
+message FaceROI {
+  required Rect face_roi = 1;
+  optional float conf = 2;
+}
+
+message FaceInfo {
+  required PersonType type = 1;
+  required FaceROI face_roi = 2;
+  optional LDMK ldmk = 3;
+  optional int32 tracking_id = 5;
+  optional FaceDirection face_direction = 10;
+}
+
+message PersonInfo {
+  required FaceInfo face_info = 1;
+  optional bytes face_feature = 2;
+  optional EyeResult eye_result = 3;
+  optional SmokeResult smoke_result = 4;
+  repeated EventResult event_result = 6;
+  optional StateTrigger state_trigger = 7;
+}
+
+message VisionPercept {
+  required CameraType camera_type = 1;
+  required int32 frame_id = 2;
+  required sint64 time_stamp = 3;
+  repeated PersonInfo person = 5;
+  required DAAResult daa_result = 6;
+}
+
+message PerceptResult {
+  repeated VisionPercept vision = 1;
+}
+
+// protoc -I=./ --cpp_out=./ ./DMSOutputEvent.proto

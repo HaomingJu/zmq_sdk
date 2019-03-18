@@ -33,6 +33,7 @@ artifact1   com.hobot.native.hobot-dms:libzmq:4.2.3:zip
 artifact3   com.hobot.native.hobot:hobotlog:2.1.0:zip
 artifact4   com.hobot.native.hobot:hobot:1.5.+:zip:true
 artifact5   com.hobot.native.speech.sdk.linux:hrsc:1.0.10:zip
+artifact6      com.hobot.native.hobot-dms:dms_sdk_protobuf_parser:0.0.6:zip
 install_repository  http://ci.horizon-robotics.com:8081/artifactory/libs-release-local/
 username   zhengbo.cai
 password   Aa123456

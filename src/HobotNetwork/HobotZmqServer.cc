@@ -52,7 +52,7 @@ int HobotZmqServer::Init(const char *config) {
   MonitorArgs args;
   args.config = config;
   args.client = this;
-  zmq_threadstart(StartMonitor, (void *)&args);
+  // zmq_threadstart(StartMonitor, (void *)&args);
 
   m_buff_size = 2 * 1024 * 1024;
   m_buff = malloc(m_buff_size);
