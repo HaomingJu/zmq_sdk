@@ -76,6 +76,10 @@ int get_monitor_event(void *monitor, int *value, char **address) {
 
 int HobotNetworkBase::RecvData(void *buff, size_t bufflen, int timeout) {
   int recv_size = 0;
+  if (m_con_status_ == CONNECT_FAIED) {
+    return TRANSFER_UNCONNECT_ERROR;
+  }
+  std::unique_lock<std::mutex> lck(m_recv_mtx_);
   int rc = zmq_setsockopt(m_requester, ZMQ_RCVTIMEO, &timeout, sizeof(int));
   assert(rc == 0);
   if (buff != nullptr) {
@@ -113,7 +117,11 @@ int HobotNetworkBase::SendData(const void *data, size_t datalen, int timeout) {
     LOGD << "data null";
     return -1;
   }
+  if (m_con_status_ == CONNECT_FAIED) {
+    return TRANSFER_UNCONNECT_ERROR;
+  }
   // printf("ZMQ_SNDTIMEO=%d\n",timeout);
+  std::unique_lock<std::mutex> lck(m_send_mtx_);
   int rc = zmq_setsockopt(m_requester, ZMQ_SNDTIMEO, &timeout, sizeof(int));
   assert(rc == 0);
   int send_size = 0;

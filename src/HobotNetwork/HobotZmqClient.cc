@@ -25,7 +25,7 @@ int HobotZmqClient::NewRequester(const char *config) {
 
   int rc = zmq_connect(m_requester, config);
   assert(rc == 0);
-
+  LOGD << "NewRequester ";
   return 0;
 }
 
