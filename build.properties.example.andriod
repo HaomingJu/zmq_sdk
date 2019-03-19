@@ -25,7 +25,6 @@ repository2_password	deploy-alpha@hobot.cc
 artifact1       com.hobot.native.hobot:hobot:1.4.4:zip:true
 artifact2       com.hobot.native.hobot:hobotlog:2.1.0:zip
 artifact3   com.hobot.native.hobot-dms:libzmq:4.2.3:zip
-
 # dependency exclude
 # pattern uri seperate by comma
 # artifact{n}_exclude {group_pattern}:{name_pattern},...
@@ -39,6 +38,6 @@ username   zhengbo.cai
 password   Aa123456
 
 # install artifact
-install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.15:zip
+install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.16:zip
 
 
