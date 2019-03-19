@@ -1,6 +1,6 @@
 #include "HobotProtocol/HobotProtocolWrite.h"
 #include <memory.h>
-
+#include "base/base.h"
 namespace Modo {
 void HobotProtocolWrite::WriteHead(int32_t version, int64_t stamp,
                                    int64_t seq) {
@@ -11,7 +11,10 @@ void HobotProtocolWrite::WriteHead(int32_t version, int64_t stamp,
   memcpy(m_buff_ + 16, &seq, 8);
 }
 
-void HobotProtocolWrite::WriteTLV(int type, int32_t length, int8_t *value) {
+int HobotProtocolWrite::WriteTLV(int type, int32_t length, int8_t *value) {
+  if (pos_ + 8 + length >= m_bufflen_ - 1) {
+    return TRANSFER_OUT_MEMORY;
+  }
   memcpy(m_buff_ + pos_, &type, 4);
   memcpy(m_buff_ + pos_ + 4, &length, 4);
   if (value) {
@@ -19,6 +22,7 @@ void HobotProtocolWrite::WriteTLV(int type, int32_t length, int8_t *value) {
   }
   pos_ = pos_ + 8 + length;
   memcpy(m_buff_, &pos_, 4);
+  return 0;
 }
 
 int HobotProtocolWrite::GetPackageLength() { return pos_; }

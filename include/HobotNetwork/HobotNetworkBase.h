@@ -21,7 +21,8 @@ class HobotNetworkBase {
         m_buff(nullptr),
         m_buff_size(0),
         m_con_status_(CONNECT_SUCCESS),
-        thread_(nullptr) {}
+        thread_(nullptr),
+        init_flag_(true) {}
   virtual ~HobotNetworkBase() {}
   virtual int Init(const char *config) = 0;
   virtual int SendData(const void *data = nullptr, size_t datalen = 0,
@@ -45,6 +46,7 @@ class HobotNetworkBase {
   void *m_context;
   void *m_requester;
   void *m_monitor;
+  bool init_flag_;
 
  protected:
   void *m_buff;

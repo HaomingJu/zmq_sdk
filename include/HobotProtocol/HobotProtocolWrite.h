@@ -18,7 +18,7 @@ class HobotProtocolWrite {
     pos_ = 24;
   }
   void WriteHead(int32_t version, int64_t stamp, int64_t seq);
-  void WriteTLV(int type, int32_t length, int8_t *value);
+  int WriteTLV(int type, int32_t length, int8_t *value);
   int GetPackageLength();
   int8_t *GetPackageBuff();
 

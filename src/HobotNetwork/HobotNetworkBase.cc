@@ -22,7 +22,9 @@ static int get_monitor_event_internal(void *monitor, int *value, char **address,
     assert(errno == EAGAIN);
     return -1;  //  timed out or no message available
   }
-  assert(zmq_msg_more(&msg));
+  if (!zmq_msg_more(&msg)) {
+    return -1;
+  }
 
   uint8_t *data = (uint8_t *)zmq_msg_data(&msg);
   uint16_t event = *(uint16_t *)(data);
@@ -32,8 +34,10 @@ static int get_monitor_event_internal(void *monitor, int *value, char **address,
   //  Second frame in message contains event address
   zmq_msg_init(&msg);
   int res = zmq_msg_recv(&msg, monitor, recv_flag) == -1;
-  assert(res != -1);
-  assert(!zmq_msg_more(&msg));
+  if (res == -1)
+    return -1;
+  if (zmq_msg_more(&msg))
+    return -1;
 
   if (address) {
     uint8_t *data = (uint8_t *)zmq_msg_data(&msg);
@@ -191,6 +195,8 @@ int HobotNetworkBase::DoSendData(const void *data, size_t datalen,
 }
 
 void HobotNetworkBase::Finish() {
+  LOGD << "begin HobotNetworkBase finish!";
+  init_flag_ = false;
   if (thread_)
     zmq_threadclose(thread_);
   LOGD << "begin zmq_close";
@@ -235,6 +241,8 @@ void StartMonitor(void *args) {
   int timer = 0;
   void *monitor = nullptr;
   while (true) {
+    if (client->init_flag_ == false)
+      break;
     if (!monitor) {
       monitor = CreateMontor(arg);
       if (!monitor) {
@@ -253,7 +261,7 @@ void StartMonitor(void *args) {
         client->SetConStatus(CONNECT_FAIED);
         timer++;
       }
-      SLEEPMS(10);
+      SLEEPMS(2);
     } else {
       //     LOGD << "Begin reconnect! ";
 
@@ -264,5 +272,6 @@ void StartMonitor(void *args) {
       timer = 0;
     }
   }
+  zmq_close(monitor);
 }
 }  // namespace Modo

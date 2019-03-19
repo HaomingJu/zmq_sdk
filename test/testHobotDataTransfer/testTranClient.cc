@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     //    transfer.Send(2002, (void *)&i, sizeof(i));
     SLEEP(1);
     i++;
-    if (i > 10000) {
+    if (i > 2) {
       break;
     }
   }

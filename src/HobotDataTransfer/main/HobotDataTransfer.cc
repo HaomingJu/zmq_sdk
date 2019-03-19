@@ -227,7 +227,7 @@ int HobotDataTransfer::Send(TransferVector &msgs, int timeout, bool sync) {
 
   if (!sp_send_msg) {
     LOGD << "new  SendMsg failed";
-    return 1;
+    return TRANSFER_PTR_NULL;
   }
 
   int8_t *buff = sp_send_msg->GetBuff();
@@ -237,8 +237,10 @@ int HobotDataTransfer::Send(TransferVector &msgs, int timeout, bool sync) {
   writer.WriteHead(0, 0, 0);
   for (auto &msg : msgs) {
     LOGD << "HobotDataTransfer::WriteTLV[" << msg.type << "," << msg.datalen
-         << "," << (char *)msg.data << "]";
-    writer.WriteTLV(msg.type, msg.datalen, (int8_t *)msg.data);
+         << "]";
+    int ret = writer.WriteTLV(msg.type, msg.datalen, (int8_t *)msg.data);
+    if (ret)
+      return ret;
   }
   sp_send_msg->SetDataSize(writer.GetPackageLength());
   LOGD << "HobotDataTransfer::Send length=" << writer.GetPackageLength();
@@ -254,7 +256,7 @@ int HobotDataTransfer::Send(int type, void *data, int datalen, int timeout,
 
   if (!sp_send_msg) {
     LOGD << "new  SendMsg failed";
-    return 1;
+    return TRANSFER_PTR_NULL;
   }
 
   LOGD << "HobotDataTransfer::Send";
@@ -267,7 +269,9 @@ int HobotDataTransfer::Send(int type, void *data, int datalen, int timeout,
   writer.WriteHead(0, 0, 0);
   LOGD << "HobotDataTransfer::WriteTLV[" << type << "," << datalen << ","
        << (char *)data << "]";
-  writer.WriteTLV(type, datalen, (int8_t *)data);
+  int ret = writer.WriteTLV(type, datalen, (int8_t *)data);
+  if (ret)
+    return ret;
   LOGD << "HobotDataTransfer::length=" << writer.GetPackageLength();
   sp_send_msg->SetDataSize(writer.GetPackageLength());
   return DoSend(sp_send_msg, timeout, sync);
@@ -299,12 +303,13 @@ int HobotDataTransfer::Receive(TransferVector &msgvec, int timeout) {
   LOGD << "IsEdianDiff_= " << IsEdianDiff_;
   while (true) {
     struct DataTransferInputMsg msg;
-    int type_rec;
-    int8_t *data_rec;
-    int datalen_rec;
+    int type_rec = 0;
+    int8_t *data_rec = nullptr;
+    int datalen_rec = 0;
     int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
-    if (ret)
-      break;
+    if (ret) {
+      return ret;
+    }
     msg.type = type_rec;
     msg.data = data_rec;
     msg.datalen = datalen_rec;
