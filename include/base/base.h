@@ -8,6 +8,7 @@
 #ifndef ZMQ_SDK_INCLUDE_BASE_BASE_H_
 #define ZMQ_SDK_INCLUDE_BASE_BASE_H_
 #include <iostream>
+#include <thread>
 #include "hobotlog/hobotlog.hpp"
 #ifndef WIN32
 #include <unistd.h>
@@ -18,7 +19,7 @@
 
 #define SLEEP Sleep
 #endif
-
+#define SLEEPMS(ms) std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 #define TRANSFER_TIMEOUT -1
 #define TRANSFER_UNCONNECT_ERROR -2
 #define TRANSFER_BUG_ERROR -3

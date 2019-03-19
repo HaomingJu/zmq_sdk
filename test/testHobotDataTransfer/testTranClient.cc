@@ -45,8 +45,8 @@ int main(int argc, char **argv) {
     printf("transfer int failed:%s\n", ipstr.c_str());
     return 1;
   }
-  transfer.SetReceiveCallback(client_call);
-  transfer.StartReceive();
+  // transfer.SetReceiveCallback(client_call);
+  // transfer.StartReceive();
   int64_t i = 0;
   long time_start = Modo::GetSysStamp();
   while (1) {
@@ -56,8 +56,8 @@ int main(int argc, char **argv) {
     //    SyncFreatureRequest request;
     //    request.camera_id = 1;
     //    request.traking_id = i;
-    printf("transfer.Send begin \n");
-    ret = transfer.Send(1009, (void *)data, 32, -1, true);
+    // printf("transfer.Send begin \n");
+    ret = transfer.Send(1009, (void *)data, 32, 3000, true);
     printf("transfer.Send ret :%d\n", ret);
     //    transfer.Send(2002, (void *)&i, sizeof(i));
     SLEEP(1);

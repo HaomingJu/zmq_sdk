@@ -38,7 +38,7 @@ int HobotZmqServer::Init(const char *config) {
 
   zmq_setsockopt(m_requester, ZMQ_SNDHWM, &zmq_sndhwm, sizeof(int));
   zmq_setsockopt(m_requester, ZMQ_SNDBUF, &zmq_sndbuf, sizeof(int));
-  int zmq_linger = 1000;
+  int zmq_linger = 0;
   zmq_setsockopt(m_requester, ZMQ_LINGER, &zmq_linger, sizeof(int));
   int zmq_snd_to = 500;
   zmq_setsockopt(m_requester, ZMQ_SNDTIMEO, &zmq_snd_to, sizeof(int));
@@ -49,10 +49,11 @@ int HobotZmqServer::Init(const char *config) {
     return 1;
   }
 
-  MonitorArgs args;
-  args.config = config;
-  args.client = this;
-  // zmq_threadstart(StartMonitor, (void *)&args);
+  MonitorArgs *args = new MonitorArgs;
+  args->config = config;
+  args->client = this;
+  args->monitor_inproc = "inproc://monitor-server";
+  thread_ = zmq_threadstart(StartMonitor, (void *)args);
 
   m_buff_size = 2 * 1024 * 1024;
   m_buff = malloc(m_buff_size);

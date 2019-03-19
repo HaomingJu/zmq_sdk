@@ -39,7 +39,7 @@ void HobotDataTransfer::Finish() {
   if (!inited_) {
     return;
   }
-
+  LOGD << "begin Finish";
   // stop processing
   workflow_main_->Reset();
 
@@ -70,7 +70,7 @@ void HobotDataTransfer::Finish() {
   if (engine_)
     delete engine_;
   engine_ = NULL;
-
+  LOGD << "begin DestroyNetworkInstance";
   if (network_) {
     HobotNetworkInstance ins;
     ins.DestroyNetworkInstance(network_);
@@ -120,9 +120,9 @@ int HobotDataTransfer::InitNetWork(const char *ip, SericeType type) {
       network_ = ins.CreateClientInstance(HOBOT_ZMQ);
       break;
   }
-  network_->Init(ip);
+  return network_->Init(ip);
   //  WaitPingPong();
-  return 0;
+  // return 0;
 }
 typedef std::vector<std::pair<hobot::Module *, int>> ObserverBinding;
 int HobotDataTransfer::InitWorkflow() {

@@ -19,10 +19,12 @@ int HobotZmqClient::NewRequester(const char *config) {
     printf("3\n");
     return 1;
   }
+  printf("NewRequester:%p\n", m_requester);
 
   int zmq_sndhwm = 1;
   zmq_setsockopt(m_requester, ZMQ_SNDHWM, &zmq_sndhwm, sizeof(int));
-
+  int zmq_linger = 0;
+  zmq_setsockopt(m_requester, ZMQ_LINGER, &zmq_linger, sizeof(int));
   int rc = zmq_connect(m_requester, config);
   assert(rc == 0);
   LOGD << "NewRequester ";
@@ -31,6 +33,7 @@ int HobotZmqClient::NewRequester(const char *config) {
 
 void HobotZmqClient::DestroyRequester() {
   zmq_close(m_requester);
+  m_requester = nullptr;
   // zmq_ctx_destroy(m_context);
 }
 
@@ -53,13 +56,13 @@ int HobotZmqClient::Init(const char *config) {
   if (ret) {
     LOGE << "new requester fail";
   }
-
   // monitor the connection status
-  MonitorArgs args;
-  args.config = config;
-  args.client = this;
-  // zmq_threadstart(StartMonitor, (void *)&args);
-
+  MonitorArgs *args = new MonitorArgs;
+  args->config = config;
+  args->client = this;
+  args->monitor_inproc = "inproc://monitor-client";
+  thread_ = zmq_threadstart(StartMonitor, (void *)args);
+  usleep(100);
   m_buff_size = 2 * 1024 * 1024;
   m_buff = malloc(m_buff_size);
   return 0;

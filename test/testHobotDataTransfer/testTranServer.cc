@@ -54,13 +54,13 @@ int main(int argc, char **argv) {
   int i = 0;
   while (1) {
     char data[128] = {0};
-    printf("transfer.Send begin \n");
-    ret = transfer.Send(1008, (void *)data, 32, -1, true);
+    // printf("transfer.Send begin \n");
+    // ret = transfer.Send(1008, (void *)data, 32, -1, true);
     //    sprintf(data, "server%d", i);
     // printf("GetIsEdianDiff :%d\n", transfer.GetIsEdianDiff());
-    //    Modo::TransferVector msgvec;
-    //    int ret = transfer.Receive(msgvec,1000);
-    printf("transfer.Send ret=%d", ret);
+    //  Modo::TransferVector msgvec;
+    // int ret = transfer.Receive(msgvec,2500);
+    // printf("transfer.Send ret=%d", ret);
     SLEEP(1);
     i++;
   }

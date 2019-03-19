@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
       printf("event:%d,%d\n", event, ZMQ_EVENT_ALL);
       pre_event = event;
     }
-    SLEEP(100000);
+    usleep(100000);
   }
 
 

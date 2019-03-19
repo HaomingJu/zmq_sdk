@@ -12,13 +12,14 @@
 #include <zmq.h>
 #include "base/base.h"
 namespace Modo {
+#define ONE_TIME_OUT 1000
 static int get_monitor_event_internal(void *monitor, int *value, char **address,
                                       int recv_flag) {
   //  First frame in message contains event number and value
   zmq_msg_t msg;
   zmq_msg_init(&msg);
   if (zmq_msg_recv(&msg, monitor, recv_flag) == -1) {
-    LOGE << "errno == EAGAIN" << errno;
+    assert(errno == EAGAIN);
     return -1;  //  timed out or no message available
   }
   assert(zmq_msg_more(&msg));
@@ -43,7 +44,6 @@ static int get_monitor_event_internal(void *monitor, int *value, char **address,
   }
   return event;
 }
-
 int get_monitor_event_with_timeout(void *monitor, int *value, char **address,
                                    int timeout) {
   int res;
@@ -57,8 +57,8 @@ int get_monitor_event_with_timeout(void *monitor, int *value, char **address,
     while ((res = get_monitor_event_internal(monitor, value, address, 0)) ==
            -1) {
       wait_time += timeout_step;
-      // fprintf(stderr, "Still waiting for monitor event after %i ms\n",
-      //         wait_time);
+      //      fprintf(stderr, "Still waiting for monitor event after %i ms\n",
+      //              wait_time);
     }
   } else {
     zmq_setsockopt(monitor, ZMQ_RCVTIMEO, &timeout, sizeof(timeout));
@@ -69,12 +69,39 @@ int get_monitor_event_with_timeout(void *monitor, int *value, char **address,
                  sizeof(timeout_infinite));
   return res;
 }
-
 int get_monitor_event(void *monitor, int *value, char **address) {
   return get_monitor_event_with_timeout(monitor, value, address, -1);
 }
-
+int HobotNetworkBase::SendData(const void *data, size_t datalen, int timeout) {
+  return TimeoutDealData(const_cast<void *>(data), datalen, timeout, OP_SEND);
+}
 int HobotNetworkBase::RecvData(void *buff, size_t bufflen, int timeout) {
+  return TimeoutDealData(buff, bufflen, timeout, OP_RECV);
+}
+int HobotNetworkBase::TimeoutDealData(void *ptr, size_t len, int timeout,
+                                      OP_TYPE type) {
+  while (true) {
+    if (timeout >= 0 && timeout <= ONE_TIME_OUT) {
+      return DoDealData(ptr, len, timeout, type);
+    }
+
+    if (timeout > ONE_TIME_OUT) {
+      int ret = DoDealData(ptr, len, ONE_TIME_OUT, type);
+      if (ret != TRANSFER_TIMEOUT) {
+        return ret;
+      }
+      timeout -= ONE_TIME_OUT;
+    }
+
+    if (timeout < 0) {
+      int ret = DoDealData(ptr, len, ONE_TIME_OUT, type);
+      if (ret != TRANSFER_TIMEOUT) {
+        return ret;
+      }
+    }
+  }
+}
+int HobotNetworkBase::DoRecvData(void *buff, size_t bufflen, int timeout) {
   int recv_size = 0;
   if (m_con_status_ == CONNECT_FAIED) {
     return TRANSFER_UNCONNECT_ERROR;
@@ -111,8 +138,20 @@ int HobotNetworkBase::CopyRecvData(void *buff, size_t bufflen) {
   }
   return len;
 }
+int HobotNetworkBase::DoDealData(void *ptr, size_t len, int timeout,
+                                 OP_TYPE type) {
+  switch (type) {
+    case OP_SEND:
+      return DoSendData(ptr, len, timeout);
+    case OP_RECV:
+      return DoRecvData(ptr, len, timeout);
+  }
+  return 0;
+}
 
-int HobotNetworkBase::SendData(const void *data, size_t datalen, int timeout) {
+
+int HobotNetworkBase::DoSendData(const void *data, size_t datalen,
+                                 int timeout) {
   if (!data || datalen <= 0) {
     LOGD << "data null";
     return -1;
@@ -152,44 +191,76 @@ int HobotNetworkBase::SendData(const void *data, size_t datalen, int timeout) {
 }
 
 void HobotNetworkBase::Finish() {
+  if (thread_)
+    zmq_threadclose(thread_);
+  LOGD << "begin zmq_close";
   zmq_close(m_requester);
+  LOGD << "begin zmq_ctx_destroy";
   zmq_ctx_destroy(m_context);
+  LOGD << "end zmq_ctx_destroy";
   free(m_buff);
 }
+void *CreateMontor(MonitorArgs *args) {
+  MonitorArgs *arg = (MonitorArgs *)args;
+  HobotNetworkBase *client = arg->client;
+  if (!client) {
+    LOGE << "client is null";
+    return nullptr;
+  }
 
+  printf("zmq_socket_monitor[%p,%s]\n", client->m_requester,
+         arg->monitor_inproc);
+  // LOGE<<"client is null";
+  zmq_socket_monitor(client->m_requester, arg->monitor_inproc, ZMQ_EVENT_ALL);
+  printf("zmq_socket_monitor end\n");
+  void *monitor = zmq_socket(client->m_context, ZMQ_PAIR);
+  assert(monitor);
+  printf(" before connect\n");
+  int linger = 0;
+  int rc = zmq_setsockopt(monitor, ZMQ_LINGER, &linger, sizeof(linger));
+  rc = zmq_connect(monitor, arg->monitor_inproc);
+  printf(" after connect\n");
+  assert(rc == 0);
+  return monitor;
+}
 void StartMonitor(void *args) {
   MonitorArgs *arg = (MonitorArgs *)args;
   HobotNetworkBase *client = arg->client;
-  const char *config = arg->config;
-
-  printf("zmq_socket_monitor begin\n");
-  zmq_socket_monitor(client->m_requester, "inproc://monitor-client",
-                     ZMQ_EVENT_ALL);
-  printf("zmq_socket_monitor end\n");
-  client->m_monitor = zmq_socket(client->m_context, ZMQ_PAIR);
-  assert(client->m_monitor);
-  printf(" before connect\n");
-  int rc = zmq_connect(client->m_monitor, "inproc://monitor-client");
-  printf(" after connect\n");
-  assert(rc == 0);
+  if (!client) {
+    LOGE << "client is null";
+    return;
+  }
 
   int event = 0;
   int timer = 0;
+  void *monitor = nullptr;
   while (true) {
+    if (!monitor) {
+      monitor = CreateMontor(arg);
+      if (!monitor) {
+        LOGE << " CreateMontor failed !";
+      }
+    }
     if (timer < 10) {
-      event = get_monitor_event(client->m_monitor, NULL, NULL);
-      LOGE << " THE EVENT" << event;
-      printf("The event is %d\n", event);
+      event = get_monitor_event(monitor, NULL, NULL);
+      LOGD << " THE EVENT " << event;
+      // printf("The event is %d\n", event);
       if (event == ZMQ_EVENT_CONNECTED ||
           event == 4096) {  // connection success
-        // break;
+        client->SetConStatus(CONNECT_SUCCESS);
+        timer = 0;
       } else {
+        client->SetConStatus(CONNECT_FAIED);
         timer++;
       }
-      usleep(100000);
+      SLEEPMS(10);
     } else {
-      client->DestroyRequester();
-      client->NewRequester(config);
+      //     LOGD << "Begin reconnect! ";
+
+      //      zmq_close(monitor);
+      //      monitor=nullptr;
+      //      client->DestroyRequester();
+      //      client->NewRequester(arg->config);
       timer = 0;
     }
   }
