@@ -1,6 +1,7 @@
 
 
 ##build linux
+mkdir -p output/zmq_sdk/
 rm -rf build
 mkdir build
 cp build.properties.example.linux-x86 build.properties
@@ -15,7 +16,6 @@ rm -rf output/zmq_sdk/*
 cp -r output_linux_x86/include/ output/zmq_sdk/
 cp -r output_linux_x86/lib/ output/zmq_sdk/
 ./gradlew upload
-
 
 ##build matrix
 

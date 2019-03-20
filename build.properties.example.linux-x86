@@ -39,4 +39,4 @@ username   zhengbo.cai
 password   Aa123456
 
 # install artifact
-install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.16:zip
+install_artifact    com.hobot.native.hobot-dms:zmq_sdk:1.0.17:zip
