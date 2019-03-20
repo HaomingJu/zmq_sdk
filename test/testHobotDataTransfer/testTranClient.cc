@@ -50,19 +50,19 @@ int main(int argc, char **argv) {
   int64_t i = 0;
   long time_start = Modo::GetSysStamp();
   while (1) {
-    char data[128] = {0};
+    char data[1024 * 1024] = {0};
     sprintf(data, "client%d", i);
     // printf("Send :%d\n", i);
     //    SyncFreatureRequest request;
     //    request.camera_id = 1;
     //    request.traking_id = i;
     // printf("transfer.Send begin \n");
-    ret = transfer.Send(1009, (void *)data, 32, 3000, true);
+    ret = transfer.Send(1009, (void *)data, 1024 * 1024, 3000, true);
     printf("transfer.Send ret :%d\n", ret);
     //    transfer.Send(2002, (void *)&i, sizeof(i));
-    SLEEP(1);
+    // SLEEP(1);
     i++;
-    if (i > 2) {
+    if (i > 10000) {
       break;
     }
   }

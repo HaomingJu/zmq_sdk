@@ -56,13 +56,14 @@ int get_monitor_event_with_timeout(void *monitor, int *value, char **address,
     // to see some information on the console
 
     int timeout_step = 250;
-    int wait_time = 0;
+    int wait_time = 2;
     zmq_setsockopt(monitor, ZMQ_RCVTIMEO, &timeout_step, sizeof(timeout_step));
     while ((res = get_monitor_event_internal(monitor, value, address, 0)) ==
            -1) {
-      wait_time += timeout_step;
+      // wait_time += timeout_step;
       //      fprintf(stderr, "Still waiting for monitor event after %i ms\n",
       //              wait_time);
+      return -1;
     }
   } else {
     zmq_setsockopt(monitor, ZMQ_RCVTIMEO, &timeout, sizeof(timeout));
@@ -107,9 +108,9 @@ int HobotNetworkBase::TimeoutDealData(void *ptr, size_t len, int timeout,
 }
 int HobotNetworkBase::DoRecvData(void *buff, size_t bufflen, int timeout) {
   int recv_size = 0;
-  if (m_con_status_ == CONNECT_FAIED) {
-    return TRANSFER_UNCONNECT_ERROR;
-  }
+  //  if (m_con_status_ == CONNECT_FAIED) {
+  //    return TRANSFER_UNCONNECT_ERROR;
+  //  }
   std::unique_lock<std::mutex> lck(m_recv_mtx_);
   int rc = zmq_setsockopt(m_requester, ZMQ_RCVTIMEO, &timeout, sizeof(int));
   assert(rc == 0);
@@ -241,8 +242,10 @@ void StartMonitor(void *args) {
   int timer = 0;
   void *monitor = nullptr;
   while (true) {
-    if (client->init_flag_ == false)
+    if (client->init_flag_ == false) {
+      LOGD << " init_flag_ is false !";
       break;
+    }
     if (!monitor) {
       monitor = CreateMontor(arg);
       if (!monitor) {
@@ -251,13 +254,16 @@ void StartMonitor(void *args) {
     }
     if (timer < 10) {
       event = get_monitor_event(monitor, NULL, NULL);
-      LOGD << " THE EVENT " << event;
+
       // printf("The event is %d\n", event);
       if (event == ZMQ_EVENT_CONNECTED ||
           event == 4096) {  // connection success
+        LOGD << " THE EVENT " << event;
         client->SetConStatus(CONNECT_SUCCESS);
         timer = 0;
+      } else if (event == -1) {
       } else {
+        LOGD << " THE EVENT " << event;
         client->SetConStatus(CONNECT_FAIED);
         timer++;
       }

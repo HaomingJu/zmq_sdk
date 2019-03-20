@@ -11,7 +11,7 @@
 
 #include "mempool.h"
 namespace Modo {
-#define BUFF_SIZE 1024 * 1024
+#define BUFF_SIZE 1024 * 1536
 
 class BuffMsg : public BaseMsg {
  public:
