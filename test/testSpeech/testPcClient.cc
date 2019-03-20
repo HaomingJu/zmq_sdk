@@ -71,16 +71,14 @@ void audio_cb(AudioInfo *audio_data) {
     msg1.type = 2001;
     sprintf(buff, "hello_%d", g_i++);
     msg1.data = (int8_t *)audio_data->audio_channel;
-    ;
     msg1.datalen = 6 * DATA_FRAME_16MS;
     tans_vector.push_back(msg1);
   }
 
   while (true) {
-    int ret = g_transfer.Send(tans_vector, true);
+    int ret = g_transfer.Send(tans_vector, 1000);
     if (ret) {
       printf("transfer Send failed\n");
-      continue;
     }
     break;
   }
