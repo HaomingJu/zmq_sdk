@@ -69,8 +69,12 @@ int HobotProtocolRead::ReadHead(int32_t &length, int32_t &version,
 // }
 
 int HobotProtocolRead::ReadTLV(int &type, int32_t &length, int8_t **value) {
-  if (pos_ >= length_) {
+  if (pos_ == length_) {
     LOGD << "ReadTLV over,length_=" << length_ << ",pos_" << pos_;
+    return 1;
+  }
+  if (pos_ > length_) {
+    LOGD << "ReadTLV out memory,length_=" << length_ << ",pos_" << pos_;
     return TRANSFER_OUT_MEMORY;
   }
   memcpy(&type, m_buff_ + pos_, 4);

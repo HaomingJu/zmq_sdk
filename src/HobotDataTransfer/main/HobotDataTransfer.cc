@@ -307,14 +307,16 @@ int HobotDataTransfer::Receive(TransferVector &msgvec, int timeout) {
     int8_t *data_rec = nullptr;
     int datalen_rec = 0;
     int ret = reader.ReadTLV(type_rec, datalen_rec, &data_rec);
-    if (ret) {
+    if (ret > 0) {
+      break;
+    }
+    if (ret < 0) {
       return ret;
     }
     msg.type = type_rec;
     msg.data = data_rec;
     msg.datalen = datalen_rec;
-    LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << ","
-         << (char *)msg.data << "]";
+    LOGD << "ReadTLV[" << msg.type << "," << msg.datalen << "]";
     msgvec.push_back(msg);
   }
   return 0;

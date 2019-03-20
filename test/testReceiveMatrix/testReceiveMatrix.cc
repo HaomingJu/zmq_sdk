@@ -65,7 +65,12 @@ int main(int argc, char **argv) {
   transfer->SetReceiveCallback(client_callback);
   transfer->StartReceive();
   while (1) {
+    //	Modo::TransferVector msgvec;
+    //	printf("begin Receive\n");
+    //	int ret = transfer->Receive(msgvec,1000);
+    //	printf("ret=%d\n",ret);
     sleep(1);
+    //	break;
   }
   transfer->Finish();
   return 0;
