@@ -10,9 +10,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <zmq.h>
-#include <string>
+#include "opencv2/opencv.hpp"
+//#include <string>
 #include "DMSSDKOutput.pb.h"
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "base/base.h"
 #include "protocol.h"
 #include "statusRenderHelper.h"
 
@@ -34,6 +36,17 @@ int client_callback(Modo::TransferVector &tran_vector) {
       for (int i = 0; i < size; i++) {
         printf("%s\n", result[i].c_str());
       }
+    }
+
+    if (msg.type == Modo::MSG_PERCEPTION_JPEG_PREVIEW_DRIVER) {
+      printf("beging imshow\n");
+      std::vector<char> mData((char *)msg.data,
+                              (char *)(msg.data + msg.datalen));
+      cv::Mat matRaw = cv::imdecode(mData, cv::IMREAD_COLOR);
+      // cv::namedWindow("test",cv::WINDOW_AUTOSIZE);
+      cv::imshow("test", matRaw);
+      // cv::imwrite("./test.jpeg",matRaw);
+      cv::waitKey(1);
     }
   }
   return 0;
