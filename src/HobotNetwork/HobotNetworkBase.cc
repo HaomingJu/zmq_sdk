@@ -19,7 +19,7 @@ static int get_monitor_event_internal(void *monitor, int *value, char **address,
   zmq_msg_t msg;
   zmq_msg_init(&msg);
   if (zmq_msg_recv(&msg, monitor, recv_flag) == -1) {
-    assert(errno == EAGAIN);
+    // assert(errno == EAGAIN);
     return -1;  //  timed out or no message available
   }
   if (!zmq_msg_more(&msg)) {
@@ -113,7 +113,9 @@ int HobotNetworkBase::DoRecvData(void *buff, size_t bufflen, int timeout) {
   //  }
   std::unique_lock<std::mutex> lck(m_recv_mtx_);
   int rc = zmq_setsockopt(m_requester, ZMQ_RCVTIMEO, &timeout, sizeof(int));
-  assert(rc == 0);
+  if (rc != 0) {
+    return TRANSFER_BUG_ERROR;
+  }
   if (buff != nullptr) {
     recv_size = zmq_recv(m_requester, buff, bufflen, 0);
     if (recv_size == -1) {
@@ -167,7 +169,9 @@ int HobotNetworkBase::DoSendData(const void *data, size_t datalen,
   // printf("ZMQ_SNDTIMEO=%d\n",timeout);
   std::unique_lock<std::mutex> lck(m_send_mtx_);
   int rc = zmq_setsockopt(m_requester, ZMQ_SNDTIMEO, &timeout, sizeof(int));
-  assert(rc == 0);
+  if (rc != 0) {
+    return TRANSFER_BUG_ERROR;
+  }
   int send_size = 0;
   bool tryAgain = true;
   send_size = zmq_send(m_requester, data, datalen, 0);
@@ -221,13 +225,18 @@ void *CreateMontor(MonitorArgs *args) {
   zmq_socket_monitor(client->m_requester, arg->monitor_inproc, ZMQ_EVENT_ALL);
   printf("zmq_socket_monitor end\n");
   void *monitor = zmq_socket(client->m_context, ZMQ_PAIR);
-  assert(monitor);
+  if (!monitor) {
+    return nullptr;
+  }
   printf(" before connect\n");
   int linger = 0;
   int rc = zmq_setsockopt(monitor, ZMQ_LINGER, &linger, sizeof(linger));
   rc = zmq_connect(monitor, arg->monitor_inproc);
   printf(" after connect\n");
-  assert(rc == 0);
+  if (rc != 0) {
+    zmq_close(monitor);
+    return nullptr;
+  }
   return monitor;
 }
 void StartMonitor(void *args) {
@@ -250,6 +259,8 @@ void StartMonitor(void *args) {
       monitor = CreateMontor(arg);
       if (!monitor) {
         LOGE << " CreateMontor failed !";
+        SLEEPMS(100);
+        continue;
       }
     }
     if (timer < 10) {
