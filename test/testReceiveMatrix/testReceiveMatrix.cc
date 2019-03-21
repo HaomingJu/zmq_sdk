@@ -14,14 +14,16 @@
 //#include <string>
 #include "DMSSDKOutput.pb.h"
 #include "HobotDataTransfer/HobotDataTransfer.h"
+#include "TimeSync/TimeSync.h"
 #include "base/base.h"
 #include "protocol.h"
 #include "statusRenderHelper.h"
 
-
 int client_callback(Modo::TransferVector &tran_vector) {
   printf("server_call \n");
+  long time_start = Modo::GetSysStamp();
   int size = tran_vector.size();
+  printf(">>>>>>>>>>>>>>>size = %d \n", size);
   for (int i = 0; i < size; i++) {
     Modo::DataTransferInputMsg msg = tran_vector[i];
     printf("server_call[%d,%d] \n", msg.type, msg.datalen);
@@ -37,7 +39,7 @@ int client_callback(Modo::TransferVector &tran_vector) {
         printf("%s\n", result[i].c_str());
       }
     }
-
+#if 1
     if (msg.type == Modo::MSG_PERCEPTION_JPEG_PREVIEW_DRIVER) {
       printf("beging imshow\n");
       std::vector<char> mData((char *)msg.data,
@@ -48,7 +50,12 @@ int client_callback(Modo::TransferVector &tran_vector) {
       // cv::imwrite("./test.jpeg",matRaw);
       cv::waitKey(1);
     }
+#endif
   }
+
+  long span = (Modo::GetSysStamp() - time_start);
+
+  printf(">>>>>>>>>>>>>>>span = %ld \n", span);
   return 0;
 }
 
